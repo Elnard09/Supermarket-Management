@@ -85,6 +85,36 @@ void show_all_product()
 	}
 	fp.close();
 }
+
+void edit_product()
+{
+	int num;
+	bool found=false;
+	system("cls");
+	cout<<endl<<endl<<"\tPlease Enter The Product #: ";
+	cin>>num;
+
+	fp.open("database.dat",ios::in|ios::out);
+	while(fp.read((char*)&produc,sizeof(product)) && found==false)
+	{
+		if(produc.getProduct()==num)
+		{
+			produc.show_product();
+			cout<<"\nPlease Enter The New Details of Product: "<<endl;
+			produc.create_product();
+			int pos=-1*sizeof(produc);
+			fp.seekp(pos,ios::cur);
+			fp.write((char*)&produc,sizeof(product));
+			cout<<endl<<endl<<"\t Record Successfully Updated...";
+			found=true;
+		}
+	}
+	fp.close();
+	if(found==false)
+		cout<<endl<<endl<<"Record Not Found...";
+	getchar();
+}
+
 int main()
 {
     cout<<"\n\t==========================================";
@@ -96,3 +126,4 @@ int main()
     cout<<"\n\tOption: ";
     return 0;
 }
+
