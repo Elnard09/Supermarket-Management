@@ -70,6 +70,21 @@ void save_product()
 	getchar();
 }
 
+void show_all_product()
+{
+	system("cls");
+	cout<<endl<<"\t\t===========================================";
+	cout<<endl<<"\t\tRECORDS.";
+	cout<<endl<<"\t\t===========================================\n";
+	fp.open("database.dat",ios::in);
+	while(fp.read((char*)&produc,sizeof(product)))
+	{
+		produc.show_product();
+		cout<<endl<<"===========================================\n"<<endl;
+		getchar();
+	}
+	fp.close();
+}
 int main()
 {
     cout<<"\n\t==========================================";
