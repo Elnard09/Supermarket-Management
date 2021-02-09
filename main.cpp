@@ -55,6 +55,21 @@ class product
 		return product_discount;
 	}
 };
+
+fstream fp;
+product produc;
+
+
+void save_product()
+{
+	fp.open("database.dat",ios::out|ios::app);
+	produc.create_product();
+	fp.write((char*)&produc,sizeof(product));
+	fp.close();
+	cout<<endl<<endl<<"The Product Has Been Sucessfully Created...";
+	getchar();
+}
+
 int main()
 {
     cout<<"\n\t==========================================";
