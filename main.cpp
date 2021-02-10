@@ -6,6 +6,31 @@
 
 using namespace std;
 
+class LoginAdmin{
+     public:
+         string passWordAttempt;
+
+         LoginManager()
+         {
+            accessGranted = 0;
+         }
+
+         void login()
+         {
+                cout << "Enter your password:";
+                cin >> passWordAttempt;
+
+                while (passWordAttempt!=passWord){
+
+                    cout << "Incorrect password!\nPlease enter the correct password:";
+                    cin >> passWordAttempt;
+            }
+         }
+    private:
+        string passWord = "98645918";
+        bool accessGranted;
+};
+
 class product
 {
 	int product_number;
@@ -113,6 +138,51 @@ void edit_product()
 	if(found==false)
 		cout<<endl<<endl<<"Record Not Found...";
 	getchar();
+}
+void admin_menu()
+{
+	system("cls");
+
+	int option;
+	cout<<"\t=============================================";
+	cout<<"\n\tPress 1 to CREATE PRODUCT";
+	cout<<"\n\tPress 2 to DISPLAY ALL PRODUCTS";
+	cout<<"\n\tPress 3 to QUERY ";
+	cout<<"\n\tPress 4 to MODIFY PRODUCT";
+	cout<<"\n\tPress 5 to DELETE PRODUCT";
+	cout<<"\n\tPress 6 to GO BACK TO MAIN MENU";
+	cout<<"\n\t===========================================";
+
+	cout<<"\n\n\tOption: ";
+	cin>>option;
+	switch(option)
+	{
+		case 1: system("cls");
+				save_product();
+				break;
+
+		case 2: show_all_product();
+				break;
+
+		case 3:
+				int num;
+				system("cls");
+				cout<<"\n\n\tPlease Enter The Product Number: ";
+				cin>>num;
+				display_record(num);
+				break;
+
+		case 4: edit_product();
+		break;
+
+		case 5: delete_product();
+		        break;
+
+		case 6: system("cls");
+				break;
+
+		default:admin_menu();
+	}
 }
 
 int main()
