@@ -17,12 +17,12 @@ class LoginAdmin{
 
          void login()
          {
-                cout << "Enter your password:";
+                cout << "\nEnter your password:";
                 cin >> passWordAttempt;
 
                 while (passWordAttempt!=passWord){
 
-                    cout << "Incorrect password!\nPlease enter the correct password:";
+                    cout << "\nIncorrect password!\nPlease enter the correct password:";
                     cin >> passWordAttempt;
             }
          }
@@ -81,6 +81,8 @@ class product
 	}
 };
 
+
+
 fstream fp;
 product produc;
 
@@ -95,6 +97,7 @@ void save_product()
 	getchar();
 }
 
+
 void show_all_product()
 {
 	system("cls");
@@ -105,11 +108,34 @@ void show_all_product()
 	while(fp.read((char*)&produc,sizeof(product)))
 	{
 		produc.show_product();
-		cout<<endl<<"===========================================\n"<<endl;
+		cout<<endl<<"==========================================\n"<<endl;
 		getchar();
 	}
 	fp.close();
 }
+
+
+void display_record(int num)
+{
+	bool found=false;
+	fp.open("database.dat",ios::in);
+	while(fp.read((char*)&produc,sizeof(product)))
+	{
+		if(produc.getProduct()==num)
+		{
+			system("cls");
+			produc.show_product();
+			found=true;
+		}
+	}
+
+	fp.close();
+	if(found == true)
+	cout<<"\n\nNo record found";
+	getchar();
+}
+
+
 
 void edit_product()
 {
@@ -139,6 +165,98 @@ void edit_product()
 		cout<<endl<<endl<<"Record Not Found...";
 	getchar();
 }
+
+
+void delete_product()
+{
+	int num;
+	system("cls");
+	cout<<endl<<endl<<"Please Enter The product #: ";
+	cin>>num;
+	fp.open("database.dat",ios::in|ios::out);
+	fstream fp2;
+	fp2.open("Temp.dat",ios::out);
+	fp.seekg(0,ios::beg);
+	while(fp.read((char*)&produc,sizeof(product)))
+	{
+		if(produc.getProduct()!=num)
+		{
+			fp2.write((char*)&produc,sizeof(product));
+		}
+	}
+	fp2.close();
+	fp.close();
+	remove("database.dat");
+	rename("Temp.dat","database.dat");
+	cout<<endl<<endl<<"\tRecord Deleted...";
+	getchar();
+}
+
+
+void product_menu()
+{
+	system("cls");
+	fp.open("database.dat",ios::in);
+
+	cout<<endl<<endl<<"\t\tProduct MENU\n\n";
+	cout<<"======================================================\n";
+	cout<<"P.NO.\t\tNAME\t\tPRICE\n";
+	cout<<"======================================================\n";
+	while(fp.read((char*)&produc,sizeof(product)))
+	{
+		cout<<produc.getProduct()<<"\t\t"<<produc.getName()<<"\t\t"<<produc.getPrice()<<endl;
+	}
+	fp.close();
+}
+
+
+
+void place_order()
+{
+	int order_arr[50],quan[50],c=0;
+	float amt,damt,total=0;
+	char ch='Y';
+	product_menu();
+	cout<<"\n================================================";
+	cout<<"\n PLACE YOUR ORDER";
+	cout<<"\n================================================\n";
+	do{
+		cout<<"\n\nEnter The Product #: ";
+		cin>>order_arr[c];
+		cout<<"\nQuantity: ";
+		cin>>quan[c];
+		c++;
+		cout<<"\nDo You Want To Order Another Product ? (y/n)";
+		cin>>ch;
+		}while(ch=='y' ||ch=='Y');
+	cout<<"\n\nThank You...";
+	getchar();
+	system("cls");
+	cout<<"\n\n********************************INVOICE************************\n";
+	cout<<"\nPr No.\tPr Name\tQuantity \tPrice \tAmount \tAmount after discount\n";
+	for(int x=0;x<=c;x++)
+	{
+		fp.open("database.dat",ios::in);
+		fp.read((char*)&produc,sizeof(product));
+		while(!fp.eof())
+		{
+			if(produc.getProduct()==order_arr[x])
+			{
+				amt=produc.getPrice()*quan[x];
+				damt=amt-(amt*produc.getDiscount()/100);
+				cout<<"\n"<<order_arr[x]<<"\t"<<produc.getName()<<"\t"<<quan[x]<<"\t\t"<<produc.getPrice()<<"\t"<<amt<<"\t\t"<<damt;
+				total+=damt;
+			}
+			fp.read((char*)&produc,sizeof(product));
+		}
+		fp.close();
+	}
+	cout<<"\n\n\t\t\t\t\tTOTAL = "<<total;
+	getchar();
+}
+
+
+
 void admin_menu()
 {
 	system("cls");
@@ -151,7 +269,7 @@ void admin_menu()
 	cout<<"\n\tPress 4 to MODIFY PRODUCT";
 	cout<<"\n\tPress 5 to DELETE PRODUCT";
 	cout<<"\n\tPress 6 to GO BACK TO MAIN MENU";
-	cout<<"\n\t===========================================";
+	cout<<"\n\t============================================";
 
 	cout<<"\n\n\tOption: ";
 	cin>>option;
@@ -185,15 +303,52 @@ void admin_menu()
 	}
 }
 
-int main()
-{
-    cout<<"\n\t==========================================";
-    cout<<"\n\t1. CUSTOMER";
-    cout<<"\n\t2. ADMINISTRATOR";
-    cout<<"\n\t3. EXIT";
-    cout<<"\n\t==========================================";
 
-    cout<<"\n\tOption: ";
-    return 0;
+int main(int argc, char *argv[])
+{
+	system("cls");
+	system("color 07");
+
+	int option;
+
+	for(;;)
+	{
+
+		cout<<"\n\t===========================================";
+		cout<<"\n\t1. CUSTOMER";
+		cout<<"\n\t2. ADMINISTRATOR";
+		cout<<"\n\t3. EXIT";
+		cout<<"\n\t============================================";
+
+		cout<<"\n\tOption: ";
+		cin>>option;
+
+		switch(option)
+		{
+			case 1: system("cls");
+					place_order();
+					getchar();
+					break;
+
+			case 2: {
+                    system("cls");
+                    LoginAdmin loginManagerObj;
+                    loginManagerObj.login();
+                    system("cls");
+                    admin_menu();
+					break;
+					}
+
+			case 3:{
+					cout<<"\n\t===========================================";
+					cout<<"\n\tGood Bye!";
+					cout<<"\n\t===========================================\n";
+					exit(0);
+                    }
+
+			default :cout<<"Invalid Input...\n";
+		}
+
+	}
 }
 
