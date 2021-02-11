@@ -314,10 +314,9 @@ void admin_menu()
 	cout<<"\t=============================================";
 	cout<<"\n\tPress 1 to CREATE PRODUCT";
 	cout<<"\n\tPress 2 to DISPLAY ALL PRODUCTS";
-	cout<<"\n\tPress 3 to QUERY ";
-	cout<<"\n\tPress 4 to MODIFY PRODUCT";
-	cout<<"\n\tPress 5 to DELETE PRODUCT";
-	cout<<"\n\tPress 6 to GO BACK TO MAIN MENU";
+	cout<<"\n\tPress 3 to MODIFY PRODUCT";
+	cout<<"\n\tPress 4 to DELETE PRODUCT";
+	cout<<"\n\tPress 5 to GO BACK TO MAIN MENU";
 	cout<<"\n\t============================================";
 
 	cout<<"\n\n\tOption: ";
@@ -331,21 +330,15 @@ void admin_menu()
 		case 2: show_all_product();
 				break;
 
-		case 3:
-				int num;
-				system("cls");
-				cout<<"\n\n\tPlease Enter The Product Number: ";
-				cin>>num;
-				display_record(num);
-				break;
 
-		case 4: edit_product();
+
+		case 3: edit_product();
 		break;
 
-		case 5: delete_product();
+		case 4: delete_product();
 		        break;
 
-		case 6: system("cls");
+		case 5: system("cls");
 				break;
 
 		default:admin_menu();
