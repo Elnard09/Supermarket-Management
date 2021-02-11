@@ -4,6 +4,8 @@
 #include<iomanip>
 #include<iostream>
 
+
+
 using namespace std;
 
 class LoginAdmin{
@@ -30,6 +32,8 @@ class LoginAdmin{
         string passWord = "98645918";
         bool accessGranted;
 };
+
+
 
 class product
 {
@@ -80,6 +84,7 @@ class product
 		return product_discount;
 	}
 };
+
 
 
 
@@ -214,8 +219,10 @@ void product_menu()
 void place_order()
 {
 	int order_arr[50],quan[50],c=0;
-	float amt,damt,total=0;
-	char ch='Y';
+	float amt,damt,total=0, totalMemberDiscount;
+	char ch = 'Y', sukiCard = 'Y', availSukiCard = 'Y';
+	string custName, custAddress, custContactNum;
+
 	product_menu();
 	cout<<"\n================================================";
 	cout<<"\n PLACE YOUR ORDER";
@@ -251,7 +258,49 @@ void place_order()
 		}
 		fp.close();
 	}
-	cout<<"\n\n\t\t\t\t\tTOTAL = "<<total;
+	cout<<"\n\n\t\t\t\t\t\tTOTAL = "<<total;
+	cout << endl;
+	cout << "-------------------------------------------------------------------------------\n";
+	cout << "Do you have Suki Card? (y/n) ";
+	cin >> sukiCard;
+
+	if (sukiCard == 'y' || sukiCard == 'Y')
+    {
+        totalMemberDiscount = total - (total * 0.1);
+        cout << "\n--------------------------------------------------------------------------\n";
+        cout << "\n\t\t\tTotal Amount with Suki Card = " << totalMemberDiscount;
+        cout << "\n\n\n\n\t\"Thank you for availing our Suri Card.\"\n";
+
+    }
+    else
+    {
+        cout << "Do you want to avail Suki Card? (y/n) ";
+        cin >> availSukiCard;
+        if (availSukiCard == 'y' || availSukiCard == 'Y')
+        {
+            cout << "Please fill up the needed information.\n";
+            cout << "Enter your name: ";
+            cin >> custName;
+            cout << "Enter your contact number: ";
+            cin >> custContactNum;
+            cin.ignore();
+
+            cout << "Enter your address: ";
+            cin >> custAddress;
+
+            totalMemberDiscount = total - (total * 0.1);
+            cout << "\n----------------------------------------------------------------------\n";
+            cout << "\n\t\t\tTotal Amount with Suki Card = " << totalMemberDiscount;
+            cout << "\n\n\n\n\t\"Thank you for availing our Suri Card.\"\n";
+            getchar();
+        }
+        else
+        {
+            getchar();
+        }
+
+    }
+
 	getchar();
 }
 
