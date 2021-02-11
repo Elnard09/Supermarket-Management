@@ -232,7 +232,7 @@ void place_order()
 	cout<<"\n\nThank You...";
 	getchar();
 	system("cls");
-	cout<<"\n\n********************************INVOICE************************\n";
+	cout<<"\n\n********************************RECEIPT************************\n";
 	cout<<"\nPr No.\tPr Name\tQuantity \tPrice \tAmount \tAmount after discount\n";
 	for(int x=0;x<=c;x++)
 	{
@@ -334,7 +334,6 @@ int main(int argc, char *argv[])
                     system("cls");
                     LoginAdmin loginManagerObj;
                     loginManagerObj.login();
-                    system("cls");
                     admin_menu();
 					break;
 					}
