@@ -8,6 +8,10 @@
 
 using namespace std;
 
+
+void membership(float totalAmount);
+void change(char availSukiCard, char memberSukiCard, float totalAmount, float totalAmountWithSukiCard);
+
 class LoginAdmin{
      public:
          string passWordAttempt;
@@ -249,8 +253,8 @@ void place_order()
 		{
 			if(produc.getProduct()==order_arr[x])
 			{
-				amt=produc.getPrice()*quan[x];
-				damt=amt-(amt*produc.getDiscount()/100);
+				amt = produc.getPrice()* quan[x];
+				damt = amt-(amt*produc.getDiscount()/100);
 				cout<<"\n"<<order_arr[x]<<"\t"<<produc.getName()<<"\t"<<quan[x]<<"\t\t"<<produc.getPrice()<<"\t"<<amt<<"\t\t"<<damt;
 				total+=damt;
 			}
@@ -260,13 +264,27 @@ void place_order()
 	}
 	cout<<"\n\n\t\t\t\t\t\tTOTAL = "<<total;
 	cout << endl;
-	cout << "-------------------------------------------------------------------------------\n";
+
+	membership(total);
+	change(availSukiCard, sukiCard, total, totalMemberDiscount);
+
+	getchar();
+}
+
+void membership(float totalAmount)
+{
+
+	float totalMemberDiscount;
+	char sukiCard = 'Y', availSukiCard = 'Y';
+	string custName, custAddress, custContactNum;
+
+    cout << "-------------------------------------------------------------------------------\n";
 	cout << "Do you have Suki Card? (y/n) ";
 	cin >> sukiCard;
 
 	if (sukiCard == 'y' || sukiCard == 'Y')
     {
-        totalMemberDiscount = total - (total * 0.1);
+        totalMemberDiscount = totalAmount - (totalAmount * 0.1);
         cout << "\n--------------------------------------------------------------------------\n";
         cout << "\n\t\t\tTotal Amount with Suki Card = " << totalMemberDiscount;
         cout << "\n\n\n\n\t\"Thank you for availing our Suri Card.\"\n";
@@ -288,7 +306,7 @@ void place_order()
             cout << "Enter your address: ";
             cin >> custAddress;
 
-            totalMemberDiscount = total - (total * 0.1);
+            totalMemberDiscount = totalAmount - (totalAmount * 0.1);
             cout << "\n----------------------------------------------------------------------\n";
             cout << "\n\t\t\tTotal Amount with Suki Card = " << totalMemberDiscount;
             cout << "\n\n\n\n\t\"Thank you for availing our Suri Card.\"\n";
@@ -301,10 +319,30 @@ void place_order()
 
     }
 
-	getchar();
 }
 
+void change(char availSukiCard, char memberSukiCard, float totalAmount, float totalAmountWithSukiCard)
+{
+    float payment, totalChange;
+    if (memberSukiCard == 'y' || memberSukiCard == 'Y' || availSukiCard == 'y' || availSukiCard == 'Y')
+    {
+        cout << "Enter your payment: ";
+        cin >> payment;
+        totalChange = payment - totalAmountWithSukiCard;
+        cout << "Your change is " << totalChange;
+        cout << endl;
+    }
+    else
+    {
+        cout << "Enter your payment: ";
+        cin >> payment;
+        totalChange = payment - totalAmount;
+        cout << "Your change is " << totalChange;
+        cout << endl;
 
+    }
+
+}
 
 void admin_menu()
 {
