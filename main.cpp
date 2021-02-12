@@ -42,7 +42,7 @@ class LoginAdmin{
 class product
 {
 	int product_number;
-	char product_name[50],addanotherornot,seeanotherornot;
+	char product_name[50],addanotherornot;
 	float product_price,product_quantity,tax,product_discount;
 
 	public:
