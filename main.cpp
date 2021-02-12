@@ -49,23 +49,30 @@ class product
 
 	void create_product()
 	{
-		cout<<endl<<"Please Enter The Product Number: ";
-		cin>>product_number;
-		cout<<endl<<"Please Enter The Name of The Product: ";
+		cout << endl << "Please Enter The Product Number: ";
+		cin >> product_number;
+
+		cout << endl << "Please Enter The Name of The Product: ";
 		cin.ignore();
 		cin.getline(product_name ,50);
-		cout<<endl<<"Please Enter The Price of The Product: ";
-		cin>>product_price;
-		cout<<endl<<"Please Enter The Discount (%): ";
-		cin>>product_discount;
+
+		cout << endl << "Please Enter The Price of The Product: ";
+		cin >> product_price;
+
+		cout << "Please Enter The Quantity of The Product: ";
+		cin >> product_quantity;
+
+		cout << endl<<"Please Enter The Discount (%): ";
+		cin >> product_discount;
 	}
 
 	void show_product()
 	{
-		cout<<endl<<"Product #: "<<product_number;
-		cout<<endl<<"Product Name: "<<product_name;
-		cout<<endl<<"Product Price: "<<product_price;
-		cout<<endl<<"Discount : "<<product_discount;
+		cout << endl << "Product #: " << product_number;
+		cout << endl << "Product Name: " << product_name;
+		cout << endl << "Product Price: " << product_price;
+		cout << endl << "Product Quantity: " << product_quantity;
+		cout << endl << "Discount : "<<product_discount;
 	}
 
 	int getProduct()
@@ -81,6 +88,11 @@ class product
 	char* getName()
 	{
 		return product_name;
+	}
+
+	float getQuantity()
+	{
+	    return product_quantity;
 	}
 
 	float getDiscount()
@@ -236,6 +248,18 @@ void place_order()
 		cin>>order_arr[c];
 		cout<<"\nQuantity: ";
 		cin>>quan[c];
+		fp.open("database.dat",ios::in);
+        while(fp.read((char*)&produc,sizeof(product)))
+        {
+            while ( produc.getQuantity() < quan[c] )
+            {
+                cout << "\nOut of stock.\nEnter another Quantity not exceeding ";
+                cout << produc.getQuantity() << " : ";
+                cin >> quan[c];
+            }
+        }
+        fp.close();
+
 		c++;
 		cout<<"\nDo You Want To Order Another Product ? (y/n)";
 		cin>>ch;
