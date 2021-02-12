@@ -33,7 +33,7 @@ class LoginAdmin{
             }
          }
     private:
-        string passWord = "98645918";
+        string passWord = "HelloWorld";
         bool accessGranted;
 };
 
@@ -42,7 +42,7 @@ class LoginAdmin{
 class product
 {
 	int product_number;
-	char product_name[50];
+	char product_name[50],addanotherornot,seeanotherornot;
 	float product_price,product_quantity,tax,product_discount;
 
 	public:
@@ -59,11 +59,19 @@ class product
 		cout << endl << "Please Enter The Price of The Product: ";
 		cin >> product_price;
 
-		cout << "Please Enter The Quantity of The Product: ";
+		cout << endl << "Please Enter The Quantity of The Product: ";
 		cin >> product_quantity;
 
-		cout << endl<<"Please Enter The Discount (%): ";
+		cout << endl << "Please Enter The Discount (%): ";
 		cin >> product_discount;
+
+        cout << endl <<"Do you want to add another product? y/n: ";
+        cin >> addanotherornot;
+            if (addanotherornot == 'y')
+            {
+                return create_product();
+            }
+
 	}
 
 	void show_product()
@@ -72,7 +80,7 @@ class product
 		cout << endl << "Product Name: " << product_name;
 		cout << endl << "Product Price: " << product_price;
 		cout << endl << "Product Quantity: " << product_quantity;
-		cout << endl << "Discount : "<<product_discount;
+		cout << endl << "Discount : " << product_discount;
 	}
 
 	int getProduct()
@@ -220,12 +228,12 @@ void product_menu()
 	fp.open("database.dat",ios::in);
 
 	cout<<endl<<endl<<"\t\tProduct MENU\n\n";
-	cout<<"======================================================\n";
-	cout<<"P.NO.\t\tNAME\t\tPRICE\n";
-	cout<<"======================================================\n";
+	cout<<"=============================================================================\n";
+	cout<<"P.NO.\t\tNAME\t\tPRICE\t\tDiscount\tAvailable Stocks\n";
+	cout<<"=============================================================================\n";
 	while(fp.read((char*)&produc,sizeof(product)))
 	{
-		cout<<produc.getProduct()<<"\t\t"<<produc.getName()<<"\t\t"<<produc.getPrice()<<endl;
+		cout<<produc.getProduct()<<"\t\t"<<produc.getName()<<"\t\t"<<produc.getPrice()<<"\t\t"<<produc.getDiscount()<<"\t\t"<<produc.getQuantity()<< endl;
 	}
 	fp.close();
 }
@@ -253,8 +261,7 @@ void place_order()
         {
             while ( produc.getQuantity() < quan[c] )
             {
-                cout << "\nOut of stock.\nEnter another Quantity not exceeding ";
-                cout << produc.getQuantity() << " : ";
+                cout << "\nOut of stock.\nEnter another Quantity not exceeding " << produc.getQuantity() << ":" ;
                 cin >> quan[c];
             }
         }
@@ -391,8 +398,6 @@ void admin_menu()
 
 		case 2: show_all_product();
 				break;
-
-
 
 		case 3: edit_product();
 		break;
