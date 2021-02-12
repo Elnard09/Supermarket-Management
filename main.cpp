@@ -3,12 +3,15 @@
 #include<string.h>
 #include<iomanip>
 #include<iostream>
+#include <Windows.h>
+
+
 
 
 
 using namespace std;
 
-
+void display(string my_str, string color);
 void membership(float totalAmount);
 void change(char availSukiCard, char memberSukiCard, float totalAmount, float totalAmountWithSukiCard);
 
@@ -380,7 +383,7 @@ void admin_menu()
 	system("cls");
 
 	int option;
-	cout<<"\t=============================================";
+	display("\t=============================================","LIGHTCYAN");
 	cout<<"\n\tPress 1 to CREATE PRODUCT";
 	cout<<"\n\tPress 2 to DISPLAY ALL PRODUCTS";
 	cout<<"\n\tPress 3 to MODIFY PRODUCT";
@@ -411,7 +414,66 @@ void admin_menu()
 		default:admin_menu();
 	}
 }
+void display(string my_str, string color){
 
+	int num_color = 0; // BLACK
+	if (color == "BLUE"){
+		num_color = 1;
+	}
+	else if (color == "GREEN"){
+		num_color = 2;
+	}
+	else if (color == "CYAN"){
+		num_color = 3;
+	}
+	else if (color == "RED"){
+		num_color = 4;
+	}
+	else if (color == "MAGENTA"){
+		num_color = 5;
+	}
+	else if (color == "BROWN"){
+		num_color = 6;
+	}
+	else if (color == "LIGHTGREY"){
+		num_color = 7;
+	}
+	else if (color == "DARKGREY"){
+		num_color = 8;
+	}
+	else if (color == "LIGHTBLUE"){
+		num_color = 9;
+	}
+	else if (color == "LIGHTGREEN"){
+		num_color = 10;
+	}
+	else if (color == "LIGHTCYAN"){
+		num_color = 11;
+	}
+	else if (color == "LIGHTRED"){
+		num_color = 12;
+	}
+	else if (color == "LIGHTMAGENTA"){
+		num_color = 13;
+	}
+	else if (color == "YELLOW"){
+		num_color = 14;
+	}
+	else if (color == "WHITE"){
+		num_color = 15;
+	}
+	else if (color == "BLINK"){
+		num_color = 128;
+	}
+
+
+	// text color
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), num_color);
+	cout << my_str;
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+
+
+}
 
 int main(int argc, char *argv[])
 {
@@ -423,11 +485,11 @@ int main(int argc, char *argv[])
 	for(;;)
 	{
 
-		cout<<"\n\t===========================================";
-		cout<<"\n\t1. CUSTOMER";
-		cout<<"\n\t2. ADMINISTRATOR";
-		cout<<"\n\t3. EXIT";
-		cout<<"\n\t============================================";
+		display("\n\t===========================================", "LIGHTCYAN");
+		display("\n\t1. CUSTOMER", "LIGHTCYAN");
+		display("\n\t2. ADMINISTRATOR", "LIGHTCYAN");
+		display("\n\t3. EXIT", "LIGHTCYAN");
+		display("\n\t============================================", "LIGHTCYAN");
 
 		cout<<"\n\tOption: ";
 		cin>>option;
