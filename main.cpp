@@ -4,8 +4,11 @@
 #include<iomanip>
 #include<iostream>
 #include <Windows.h>
+#include "TextTable.h"
 
 using namespace std;
+
+string g_system_name = "SUPERMARKET MANAGEMENT SYSTEM";
 
 void display(string my_str, string color);
 void membership(float totalAmount);
@@ -57,7 +60,7 @@ class LoginAdmin{
         if (givenPassWord == password)
         {
             display("\n\n............Successfully log in............\n", "LIGHTGREEN");
-
+            getch();
         }
 
 		else
@@ -151,7 +154,7 @@ product produc;
 
 void save_product()
 {
-	fp.open("database.dat",ios::out|ios::app);
+	fp.open("database.txt",ios::out|ios::app);
 	produc.create_product();
 	fp.write((char*)&produc,sizeof(product));
 	fp.close();
@@ -168,7 +171,7 @@ void show_all_product()
 	cout<<endl<<"\t\t===========================================";
 	cout<<endl<<"\t\tRECORDS.";
 	cout<<endl<<"\t\t===========================================\n";
-	fp.open("database.dat",ios::in);
+	fp.open("database.txt",ios::in);
 	while(fp.read((char*)&produc,sizeof(product)))
 	{
 		produc.show_product();
@@ -182,7 +185,7 @@ void show_all_product()
 void display_record(int num)
 {
 	bool found=false;
-	fp.open("database.dat",ios::in);
+	fp.open("database.txt",ios::in);
 	while(fp.read((char*)&produc,sizeof(product)))
 	{
 		if(produc.getProduct()==num)
@@ -209,7 +212,7 @@ void edit_product()
 	cout<<endl<<endl<<"\tPlease Enter The Product #: ";
 	cin>>num;
 
-	fp.open("database.dat",ios::in|ios::out);
+	fp.open("database.txt",ios::in|ios::out);
 	while(fp.read((char*)&produc,sizeof(product)) && found==false)
 	{
 		if(produc.getProduct()==num)
@@ -238,9 +241,9 @@ void delete_product()
 	system("cls");
 	cout<<endl<<endl<<"Please Enter The product #: ";
 	cin>>num;
-	fp.open("database.dat",ios::in|ios::out);
+	fp.open("database.txt",ios::in|ios::out);
 	fstream fp2;
-	fp2.open("Temp.dat",ios::out);
+	fp2.open("Temp.txt",ios::out);
 	fp.seekg(0,ios::beg);
 	while(fp.read((char*)&produc,sizeof(product)))
 	{
@@ -251,8 +254,8 @@ void delete_product()
 	}
 	fp2.close();
 	fp.close();
-	remove("database.dat");
-	rename("Temp.dat","database.dat");
+	remove("database.txt");
+	rename("Temp.txt","database.txt");
 	cout<<endl<<endl;
 	display("\tRecord Deleted...", "LIGHTGREEN");
 	getchar();
@@ -261,8 +264,16 @@ void delete_product()
 
 void product_menu()
 {
+    TextTable t( '-', '|', '+' );
+    t.add( "P.NO.");
+    t.add( "NAME");
+    t.add( "PRICE");
+    t.add( "Discount");
+    t.add( "Available Stocks");
+    t.endOfRow();
+
 	system("cls");
-	fp.open("database.dat",ios::in);
+	fp.open("database.txt",ios::in);
 
 	cout<<endl<<endl<<"\t\t\t\tProduct MENU\n\n";
 	cout<<"==================================================================================\n";
@@ -270,7 +281,7 @@ void product_menu()
 	cout<<"==================================================================================\n";
 	while(fp.read((char*)&produc,sizeof(product)))
 	{
-		cout<<produc.getProduct()<<"\t\t"<<produc.getName()<<"\t\t"<<produc.getPrice()<<"\t\t"<<produc.getDiscount()<<"\t\t"<<produc.getQuantity()<< endl;
+		cout<<produc.getProduct()<<"\t\t"<<produc.getName()<<"\t\t"<<produc.getPrice()<<"\t\t"<<produc.getDiscount()<<"%"<<"\t\t"<<produc.getQuantity()<< endl;
 	}
 	fp.close();
 }
@@ -293,7 +304,7 @@ void place_order()
 		cin>>order_arr[c];
 		cout<<"\nQuantity: ";
 		cin>>quan[c];
-		fp.open("database.dat",ios::in);
+		fp.open("database.txt",ios::in);
 		fp.read((char*)&produc,sizeof(product));
 		while(!fp.eof())
 		{
@@ -309,14 +320,14 @@ void place_order()
 		cout<<"\nDo You Want To Order Another Product ? (y/n)";
 		cin>>ch;
 		}while(ch=='y' ||ch=='Y');
-	cout<<"\n\nThank You...";
+	display("\n\nThank You...", "LIGHTGREEN");
 	getchar();
 	system("cls");
 	cout<<"\n\n********************************RECEIPT************************\n";
 	cout<<"\nPr No.\tPr Name\tQuantity \tPrice \tAmount \tAmount after discount\n";
 	for(int x=0;x<=c;x++)
 	{
-		fp.open("database.dat",ios::in);
+		fp.open("database.txt",ios::in);
 		fp.read((char*)&produc,sizeof(product));
 		while(!fp.eof())
 		{
@@ -324,13 +335,14 @@ void place_order()
 			{
 				amt = produc.getPrice()* quan[x];
 				damt = amt-(amt*produc.getDiscount()/100);
-				cout<<"\n"<<order_arr[x]<<"\t"<<produc.getName()<<"\t"<<quan[x]<<"\t\t"<<produc.getPrice()<<"\t"<<amt<<"\t\t"<<damt;
+				cout<<"\n"<<order_arr[x]<<"\t"<<produc.getName()<<"\t"<<quan[x]<<"\t\t"<< fixed <<setprecision(2) <<produc.getPrice()<<"\t"<<amt<<"\t\t"<<damt;
 				total+=damt;
 			}
 			fp.read((char*)&produc,sizeof(product));
 		}
 		fp.close();
 	}
+	cout << setprecision(2);
 	cout<<"\n\n\t\t\t\t\t\tTOTAL = "<<total;
 	cout << endl;
 
@@ -355,8 +367,9 @@ void membership(float totalAmount)
     {
         totalMemberDiscount = totalAmount - (totalAmount * 0.1);
         cout << "\n--------------------------------------------------------------------------\n";
+        cout << setprecision(2);
         cout << "\n\t\t\tTotal Amount with Suki Card = " << totalMemberDiscount;
-        cout << "\n\n\n\n\t\"Thank you for availing our Suri Card.\"\n";
+        display("\n\n\n\n\t\"Thank you for availing our Suri Card.\"\n", "LIGHTGREEN");
 
     }
     else
@@ -377,8 +390,9 @@ void membership(float totalAmount)
 
             totalMemberDiscount = totalAmount - (totalAmount * 0.1);
             cout << "\n----------------------------------------------------------------------\n";
+            cout << fixed << setprecision(2);
             cout << "\n\t\t\tTotal Amount with Suki Card = " << totalMemberDiscount;
-            cout << "\n\n\n\n\t\"Thank you for availing our Suri Card.\"\n";
+            display("\n\n\n\n\t\"Thank you for availing our Suri Card.\"\n", "LIGHTGREEN");
             getchar();
         }
         else
@@ -398,7 +412,7 @@ void change(char availSukiCard, char memberSukiCard, float totalAmount, float to
         cout << "Enter your payment: ";
         cin >> payment;
         totalChange = payment - totalAmountWithSukiCard;
-        cout << "Your change is " << totalChange;
+        cout << fixed << setprecision(2) << "Your change is " << totalChange;
         cout << endl;
     }
     else
@@ -406,7 +420,7 @@ void change(char availSukiCard, char memberSukiCard, float totalAmount, float to
         cout << "Enter your payment: ";
         cin >> payment;
         totalChange = payment - totalAmount;
-        cout << "Your change is " << totalChange;
+        cout << fixed << setprecision(2) << "Your change is " << totalChange;
         cout << endl;
 
     }
@@ -418,13 +432,14 @@ void admin_menu()
 	system("cls");
 
 	int option;
-	display("\t=============================================","LIGHTCYAN");
-	cout<<"\n\tPress 1 to CREATE PRODUCT";
-	cout<<"\n\tPress 2 to DISPLAY ALL PRODUCTS";
-	cout<<"\n\tPress 3 to MODIFY PRODUCT";
-	cout<<"\n\tPress 4 to DELETE PRODUCT";
-	cout<<"\n\tPress 5 to GO BACK TO MAIN MENU";
-	cout<<"\n\t============================================";
+
+	display("\n\t=============================================","LIGHTCYAN");
+	display("\n\tPress 1 to CREATE PRODUCT", "LIGHTCYAN");
+	display("\n\tPress 2 to DISPLAY ALL PRODUCTS", "LIGHTCYAN");
+	display("\n\tPress 3 to MODIFY PRODUCT", "LIGHTCYAN");
+	display("\n\tPress 4 to DELETE PRODUCT", "LIGHTCYAN");
+	display("\n\tPress 5 to GO BACK TO MAIN MENU", "LIGHTCYAN");
+	display("\n\t============================================", "LIGHTCYAN");
 
 	cout<<"\n\n\tOption: ";
 	cin>>option;
@@ -451,7 +466,7 @@ void admin_menu()
 }
 void display(string my_str, string color){
 
-	int num_color = 0; // BLACK
+	int num_color = 0;
 	if (color == "BLUE"){
 		num_color = 1;
 	}
@@ -510,23 +525,28 @@ void display(string my_str, string color){
 
 }
 
+void myHeader(){
+	display("***"+g_system_name+"***\n","YELLOW");
+}
+
 int main(int argc, char *argv[])
 {
 	system("cls");
 	system("color 07");
 
 	int option;
+	myHeader();
 
 	for(;;)
 	{
 
-		display("\n\t===========================================", "LIGHTCYAN");
-		display("\n\t1. CUSTOMER", "LIGHTCYAN");
-		display("\n\t2. ADMINISTRATOR", "LIGHTCYAN");
-		display("\n\t3. EXIT", "LIGHTCYAN");
-		display("\n\t============================================", "LIGHTCYAN");
+		display("\n===========================================", "LIGHTCYAN");
+		display("\n1. CUSTOMER", "LIGHTCYAN");
+		display("\n2. ADMINISTRATOR", "LIGHTCYAN");
+		display("\n3. EXIT", "LIGHTCYAN");
+		display("\n===========================================", "LIGHTCYAN");
 
-		cout<<"\n\tOption: ";
+		cout<<"\nOption: ";
 		cin>>option;
 
 		switch(option)
