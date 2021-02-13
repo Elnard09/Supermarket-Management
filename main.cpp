@@ -5,39 +5,70 @@
 #include<iostream>
 #include <Windows.h>
 
-
-
-
-
 using namespace std;
 
 void display(string my_str, string color);
 void membership(float totalAmount);
 void change(char availSukiCard, char memberSukiCard, float totalAmount, float totalAmountWithSukiCard);
 
-class LoginAdmin{
-     public:
-         string passWordAttempt;
 
-         LoginManager()
+class LoginAdmin{
+    private:
+	string password;
+	string passWord = "12345678910111213";
+	bool accessGranted;
+
+	public:
+	     LoginManager()
          {
             accessGranted = 0;
          }
 
-         void login()
-         {
-                cout << "\nEnter your password:";
-                cin >> passWordAttempt;
+	void logIn(){
+		password = "";
 
-                while (passWordAttempt!=passWord){
+		cout << "Enter password: ";
+		char ch = getch();
+		int counter = 0;
+		while(ch != 13)
+        {
+			if (ch == 8)
+            {
+				system("cls");
+				cout << "Enter password: ";
+				counter--;
+				for(int i = 0; i < counter; i++)
+                {
+					cout << "*";
+				}
+				password = password.substr(0,password.length() - 1);
 
-                    cout << "\nIncorrect password!\nPlease enter the correct password:";
-                    cin >> passWordAttempt;
-            }
-         }
-    private:
-        string passWord = "HelloWorld";
-        bool accessGranted;
+			}
+			else
+            {
+				cout << "*";
+				counter++;
+				password.push_back(ch);
+			}
+			ch = getch();
+
+		}
+        string givenPassWord = "12345678910111213";
+        if (givenPassWord == password)
+        {
+
+            string info = "Successfully log in";
+
+        }
+
+		else
+        {
+			system("cls");
+			display("Invalid username or password\n","LIGHTRED");
+			logIn();
+		}
+
+    }
 };
 
 
@@ -79,11 +110,11 @@ class product
 
 	void show_product()
 	{
-		cout << endl << "Product #: " << product_number;
-		cout << endl << "Product Name: " << product_name;
-		cout << endl << "Product Price: " << product_price;
-		cout << endl << "Product Quantity: " << product_quantity;
-		cout << endl << "Discount : " << product_discount;
+		cout << endl << "\nProduct #: " << product_number;
+		cout << endl << "\nProduct Name: " << product_name;
+		cout << endl << "\nProduct Price: " << product_price;
+		cout << endl << "\nProduct Quantity: " << product_quantity;
+		cout << endl << "\nDiscount : " << product_discount;
 	}
 
 	int getProduct()
@@ -125,7 +156,9 @@ void save_product()
 	produc.create_product();
 	fp.write((char*)&produc,sizeof(product));
 	fp.close();
-	cout<<endl<<endl<<"The Product Has Been Sucessfully Created...";
+	cout << endl;
+	cout << endl;
+	display("The Product Has Been Sucessfully Created...", "LIGHTGREEN");
 	getchar();
 }
 
@@ -188,7 +221,8 @@ void edit_product()
 			int pos=-1*sizeof(produc);
 			fp.seekp(pos,ios::cur);
 			fp.write((char*)&produc,sizeof(product));
-			cout<<endl<<endl<<"\t Record Successfully Updated...";
+			cout<<endl<<endl;
+			display("\t Record Successfully Updated...", "LIGHTGREEN");
 			found=true;
 		}
 	}
@@ -220,7 +254,8 @@ void delete_product()
 	fp.close();
 	remove("database.dat");
 	rename("Temp.dat","database.dat");
-	cout<<endl<<endl<<"\tRecord Deleted...";
+	cout<<endl<<endl;
+	display("\tRecord Deleted...", "LIGHTGREEN");
 	getchar();
 }
 
@@ -230,10 +265,10 @@ void product_menu()
 	system("cls");
 	fp.open("database.dat",ios::in);
 
-	cout<<endl<<endl<<"\t\tProduct MENU\n\n";
-	cout<<"=============================================================================\n";
+	cout<<endl<<endl<<"\t\t\t\tProduct MENU\n\n";
+	cout<<"==================================================================================\n";
 	cout<<"P.NO.\t\tNAME\t\tPRICE\t\tDiscount\tAvailable Stocks\n";
-	cout<<"=============================================================================\n";
+	cout<<"==================================================================================\n";
 	while(fp.read((char*)&produc,sizeof(product)))
 	{
 		cout<<produc.getProduct()<<"\t\t"<<produc.getName()<<"\t\t"<<produc.getPrice()<<"\t\t"<<produc.getDiscount()<<"\t\t"<<produc.getQuantity()<< endl;
@@ -260,16 +295,17 @@ void place_order()
 		cout<<"\nQuantity: ";
 		cin>>quan[c];
 		fp.open("database.dat",ios::in);
-        while(fp.read((char*)&produc,sizeof(product)))
-        {
-            while ( produc.getQuantity() < quan[c] )
-            {
-                cout << "\nOut of stock.\nEnter another Quantity not exceeding " << produc.getQuantity() << ":" ;
-                cin >> quan[c];
-            }
-        }
-        fp.close();
-
+		fp.read((char*)&produc,sizeof(product));
+		while(!fp.eof())
+		{
+			if(produc.getQuantity() < quan[c])
+			{
+				cout << "Out of Stock!\nPlease enter Quantity not exceeding " << produc.getQuantity() << ": ";
+				cin >> quan[c];
+			}
+			fp.read((char*)&produc,sizeof(product));
+		}
+		fp.close();
 		c++;
 		cout<<"\nDo You Want To Order Another Product ? (y/n)";
 		cin>>ch;
@@ -285,7 +321,7 @@ void place_order()
 		fp.read((char*)&produc,sizeof(product));
 		while(!fp.eof())
 		{
-			if(produc.getProduct()==order_arr[x])
+			if(produc.getProduct() == order_arr[x])
 			{
 				amt = produc.getPrice()* quan[x];
 				damt = amt-(amt*produc.getDiscount()/100);
@@ -504,7 +540,7 @@ int main(int argc, char *argv[])
 			case 2: {
                     system("cls");
                     LoginAdmin loginManagerObj;
-                    loginManagerObj.login();
+                    loginManagerObj.logIn();
                     admin_menu();
 					break;
 					}
@@ -516,7 +552,9 @@ int main(int argc, char *argv[])
 					exit(0);
                     }
 
-			default :cout<<"Invalid Input...\n";
+			default :
+                    cout << endl;
+                    display("Invalid Input...\n", "LIGHTRED");
 		}
 
 	}
