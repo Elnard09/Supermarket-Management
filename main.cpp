@@ -27,7 +27,7 @@ class LoginAdmin{
 	void logIn(){
 		password = "";
 
-		cout << "Enter password: ";
+		cout << "\nEnter password: ";
 		char ch = getch();
 		int counter = 0;
 		while(ch != 13)
@@ -56,15 +56,14 @@ class LoginAdmin{
         string givenPassWord = "12345678910111213";
         if (givenPassWord == password)
         {
-
-            string info = "Successfully log in";
+            display("\n\n............Successfully log in............\n", "LIGHTGREEN");
 
         }
 
 		else
         {
 			system("cls");
-			display("Invalid username or password\n","LIGHTRED");
+			display("............Invalid password............\n","LIGHTRED");
 			logIn();
 		}
 
