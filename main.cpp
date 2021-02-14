@@ -154,7 +154,7 @@ product produc;
 
 void save_product()
 {
-	fp.open("database.txt",ios::out|ios::app);
+	fp.open("database.dat",ios::out|ios::app);
 	produc.create_product();
 	fp.write((char*)&produc,sizeof(product));
 	fp.close();
@@ -171,7 +171,7 @@ void show_all_product()
 	cout<<endl<<"\t\t===========================================";
 	cout<<endl<<"\t\tRECORDS.";
 	cout<<endl<<"\t\t===========================================\n";
-	fp.open("database.txt",ios::in);
+	fp.open("database.dat",ios::in);
 	while(fp.read((char*)&produc,sizeof(product)))
 	{
 		produc.show_product();
@@ -185,7 +185,7 @@ void show_all_product()
 void display_record(int num)
 {
 	bool found=false;
-	fp.open("database.txt",ios::in);
+	fp.open("database.dat",ios::in);
 	while(fp.read((char*)&produc,sizeof(product)))
 	{
 		if(produc.getProduct()==num)
@@ -212,7 +212,7 @@ void edit_product()
 	cout<<endl<<endl<<"\tPlease Enter The Product #: ";
 	cin>>num;
 
-	fp.open("database.txt",ios::in|ios::out);
+	fp.open("database.dat",ios::in|ios::out);
 	while(fp.read((char*)&produc,sizeof(product)) && found==false)
 	{
 		if(produc.getProduct()==num)
@@ -241,9 +241,9 @@ void delete_product()
 	system("cls");
 	cout<<endl<<endl<<"Please Enter The product #: ";
 	cin>>num;
-	fp.open("database.txt",ios::in|ios::out);
+	fp.open("database.dat",ios::in|ios::out);
 	fstream fp2;
-	fp2.open("Temp.txt",ios::out);
+	fp2.open("Temp.dat",ios::out);
 	fp.seekg(0,ios::beg);
 	while(fp.read((char*)&produc,sizeof(product)))
 	{
@@ -254,8 +254,8 @@ void delete_product()
 	}
 	fp2.close();
 	fp.close();
-	remove("database.txt");
-	rename("Temp.txt","database.txt");
+	remove("database.dat");
+	rename("Temp.dat","database.dat");
 	cout<<endl<<endl;
 	display("\tRecord Deleted...", "LIGHTGREEN");
 	getchar();
@@ -273,7 +273,7 @@ void product_menu()
     t.endOfRow();
 
 	system("cls");
-	fp.open("database.txt",ios::in);
+	fp.open("database.dat",ios::in);
 
 	cout<<endl<<endl<<"\t\t\t\tProduct MENU\n\n";
 	cout<<"==================================================================================\n";
@@ -292,7 +292,7 @@ void place_order()
 {
 	int order_arr[50],quan[50],c=0;
 	float amt,damt,total=0, totalMemberDiscount;
-	char ch = 'Y', sukiCard = 'Y', availSukiCard = 'Y';
+	char ch = 'Y';
 	string custName, custAddress, custContactNum;
 
 	product_menu();
@@ -304,30 +304,20 @@ void place_order()
 		cin>>order_arr[c];
 		cout<<"\nQuantity: ";
 		cin>>quan[c];
-		fp.open("database.txt",ios::in);
-		fp.read((char*)&produc,sizeof(product));
-		while(!fp.eof())
-		{
-			if(produc.getQuantity() < quan[c])
-			{
-				cout << "Out of Stock!\nPlease enter Quantity not exceeding " << produc.getQuantity() << ": ";
-				cin >> quan[c];
-			}
-			fp.read((char*)&produc,sizeof(product));
-		}
-		fp.close();
+
 		c++;
 		cout<<"\nDo You Want To Order Another Product ? (y/n)";
 		cin>>ch;
 		}while(ch=='y' ||ch=='Y');
 	display("\n\nThank You...", "LIGHTGREEN");
 	getchar();
+	getch();
 	system("cls");
 	cout<<"\n\n********************************RECEIPT************************\n";
 	cout<<"\nPr No.\tPr Name\tQuantity \tPrice \tAmount \tAmount after discount\n";
 	for(int x=0;x<=c;x++)
 	{
-		fp.open("database.txt",ios::in);
+		fp.open("database.dat",ios::in);
 		fp.read((char*)&produc,sizeof(product));
 		while(!fp.eof())
 		{
@@ -336,7 +326,7 @@ void place_order()
 				amt = produc.getPrice()* quan[x];
 				damt = amt-(amt*produc.getDiscount()/100);
 				cout<<"\n"<<order_arr[x]<<"\t"<<produc.getName()<<"\t"<<quan[x]<<"\t\t"<< fixed <<setprecision(2) <<produc.getPrice()<<"\t"<<amt<<"\t\t"<<damt;
-				total+=damt;
+				total += damt;
 			}
 			fp.read((char*)&produc,sizeof(product));
 		}
@@ -347,7 +337,6 @@ void place_order()
 	cout << endl;
 
 	membership(total);
-	change(availSukiCard, sukiCard, total, totalMemberDiscount);
 
 	getchar();
 }
@@ -390,17 +379,18 @@ void membership(float totalAmount)
 
             totalMemberDiscount = totalAmount - (totalAmount * 0.1);
             cout << "\n----------------------------------------------------------------------\n";
-            cout << fixed << setprecision(2);
+            cout << setprecision(2);
             cout << "\n\t\t\tTotal Amount with Suki Card = " << totalMemberDiscount;
-            display("\n\n\n\n\t\"Thank you for availing our Suri Card.\"\n", "LIGHTGREEN");
+            display("\n\n........Thank you for availing our Suri Card............\n", "LIGHTGREEN");
             getchar();
         }
         else
         {
-            getchar();
+            getch();
         }
 
     }
+    change(availSukiCard, sukiCard, totalAmount, totalMemberDiscount);
 
 }
 
@@ -412,7 +402,7 @@ void change(char availSukiCard, char memberSukiCard, float totalAmount, float to
         cout << "Enter your payment: ";
         cin >> payment;
         totalChange = payment - totalAmountWithSukiCard;
-        cout << fixed << setprecision(2) << "Your change is " << totalChange;
+        cout << setprecision(2) << "Your change is " << totalChange;
         cout << endl;
     }
     else
@@ -420,7 +410,7 @@ void change(char availSukiCard, char memberSukiCard, float totalAmount, float to
         cout << "Enter your payment: ";
         cin >> payment;
         totalChange = payment - totalAmount;
-        cout << fixed << setprecision(2) << "Your change is " << totalChange;
+        cout << setprecision(2) << "Your change is " << totalChange;
         cout << endl;
 
     }
