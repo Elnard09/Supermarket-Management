@@ -4,7 +4,6 @@
 #include<iomanip>
 #include<iostream>
 #include <Windows.h>
-#include "TextTable.h"
 
 using namespace std;
 
@@ -101,13 +100,6 @@ class product
 		cout << endl << "Please Enter The Discount (%): ";
 		cin >> product_discount;
 
-        cout << endl <<"Do you want to add another product? y/n: ";
-        cin >> addanotherornot;
-            if (addanotherornot == 'y')
-            {
-                return create_product();
-            }
-
 	}
 
 	void show_product()
@@ -154,13 +146,26 @@ product produc;
 
 void save_product()
 {
+    char addanotherornot;
+
 	fp.open("database.dat",ios::out|ios::app);
 	produc.create_product();
 	fp.write((char*)&produc,sizeof(product));
 	fp.close();
+	cout << endl <<"Do you want to add another product? y/n: ";
+    cin >> addanotherornot;
+            while (addanotherornot == 'y' || addanotherornot == 'Y')
+            {
+                fp.open("database.dat",ios::out|ios::app);
+                produc.create_product();
+                fp.write((char*)&produc,sizeof(product));
+                fp.close();
+                cout << endl <<"Do you want to add another product? y/n: ";
+                cin >> addanotherornot;
+            }
 	cout << endl;
 	cout << endl;
-	display("The Product Has Been Sucessfully Created...", "LIGHTGREEN");
+	display("The Product/s Has Been Sucessfully Created...", "LIGHTGREEN");
 	getchar();
 }
 
@@ -264,13 +269,6 @@ void delete_product()
 
 void product_menu()
 {
-    TextTable t( '-', '|', '+' );
-    t.add( "P.NO.");
-    t.add( "NAME");
-    t.add( "PRICE");
-    t.add( "Discount");
-    t.add( "Available Stocks");
-    t.endOfRow();
 
 	system("cls");
 	fp.open("database.dat",ios::in);

@@ -11,7 +11,6 @@ class TextTable {
 	TextTable t( '-', '|', '+' );
 		t.add( "Audit Trail Info" );
 		t.endOfRow();
-
 		cout << t
 	*/
 
@@ -72,7 +71,6 @@ class TextTable {
         }
         endOfRow();
     }
-
     template <typename Container>
     void addRow( Container const & container )
     {
