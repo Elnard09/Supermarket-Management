@@ -2,6 +2,7 @@
 #include<conio.h>
 #include<string.h>
 #include<iomanip>
+#include<string>
 #include<iostream>
 #include <Windows.h>
 
@@ -273,13 +274,16 @@ void product_menu()
 	system("cls");
 	fp.open("database.dat",ios::in);
 
-	cout<<endl<<endl<<"\t\t\t\tProduct MENU\n\n";
+	display("\n\n\t\t\t\t\PRODUCT MENU\n\n", "YELLOW");
 	cout<<"==================================================================================\n";
 	cout<<"P.NO.\t\tNAME\t\tPRICE\t\tDiscount\tAvailable Stocks\n";
 	cout<<"==================================================================================\n";
 	while(fp.read((char*)&produc,sizeof(product)))
 	{
-		cout<<produc.getProduct()<<"\t\t"<<produc.getName()<<"\t\t"<<produc.getPrice()<<"\t\t"<<produc.getDiscount()<<"%"<<"\t\t"<<produc.getQuantity()<< endl;
+		cout << produc.getProduct() << "\t\t" << produc.getName();
+		cout << "\t\t" << setprecision(2) << fixed <<produc.getPrice();
+		cout << "\t\t" << setprecision(0) << produc.getDiscount()<<"%";
+		cout << "\t\t"<< setprecision(0) << fixed <<produc.getQuantity()<< endl;
 	}
 	fp.close();
 }
@@ -302,6 +306,22 @@ void place_order()
 		cin>>order_arr[c];
 		cout<<"\nQuantity: ";
 		cin>>quan[c];
+		/**
+		fp.open("database.dat",ios::in | ios::binary);
+		fp.seekg((quan[c]), ios::beg);
+		while(fp.read(reinterpret_cast<char *>(&produc), sizeof(product)))
+        {
+
+
+            while ( produc.getQuantity() < quan[c] )
+            {
+                cout << "\nOut of stock.\nEnter another Quantity not exceeding ";
+                cout << stoi(produc.getQuantity(), 0, 2)<< " : ";
+                cin >> quan[c];
+            }
+        }
+        fp.close();
+        **/
 
 		c++;
 		cout<<"\nDo You Want To Order Another Product ? (y/n)";
@@ -311,8 +331,10 @@ void place_order()
 	getchar();
 	getch();
 	system("cls");
-	cout<<"\n\n********************************RECEIPT************************\n";
-	cout<<"\nPr No.\tPr Name\tQuantity \tPrice \tAmount \tAmount after discount\n";
+	display("\n\n\t\t\t\tRECEIPT\n", "YELLOW");
+	cout<<"==================================================================================\n";
+	cout<<"Pr No.\tPr Name\tQuantity \tPrice \tAmount \tAmount after discount\n";
+	cout<<"==================================================================================\n";
 	for(int x=0;x<=c;x++)
 	{
 		fp.open("database.dat",ios::in);
@@ -346,40 +368,42 @@ void membership(float totalAmount)
 	char sukiCard = 'Y', availSukiCard = 'Y';
 	string custName, custAddress, custContactNum;
 
-    cout << "-------------------------------------------------------------------------------\n";
-	cout << "Do you have Suki Card? (y/n) ";
+    cout << "------------------------------------------------------------------------\n";
+	cout << "\nDo you have Suki Card? (y/n) ";
 	cin >> sukiCard;
 
 	if (sukiCard == 'y' || sukiCard == 'Y')
     {
         totalMemberDiscount = totalAmount - (totalAmount * 0.1);
-        cout << "\n--------------------------------------------------------------------------\n";
+        cout << "\n-------------------------------------------------------------------\n";
         cout << setprecision(2);
-        cout << "\n\t\t\tTotal Amount with Suki Card = " << totalMemberDiscount;
+        cout << "\n\t\t\tTotal Amount with Suki Card Discount= " << totalMemberDiscount;
         display("\n\n\n\n\t\"Thank you for availing our Suri Card.\"\n", "LIGHTGREEN");
 
     }
     else
     {
-        cout << "Do you want to avail Suki Card? (y/n) ";
+        cout << "\nDo you want to avail Suki Card? (y/n) ";
         cin >> availSukiCard;
         if (availSukiCard == 'y' || availSukiCard == 'Y')
         {
-            cout << "Please fill up the needed information.\n";
-            cout << "Enter your name: ";
+
+            cout << "\nPlease fill up the needed information.\n";
+
+            cout << "\nEnter your name: ";
             cin >> custName;
-            cout << "Enter your contact number: ";
+            cout << "\nEnter your contact number: ";
             cin >> custContactNum;
             cin.ignore();
 
-            cout << "Enter your address: ";
+            cout << "\nEnter your address: ";
             cin >> custAddress;
 
             totalMemberDiscount = totalAmount - (totalAmount * 0.1);
             cout << "\n----------------------------------------------------------------------\n";
             cout << setprecision(2);
-            cout << "\n\t\t\tTotal Amount with Suki Card = " << totalMemberDiscount;
-            display("\n\n........Thank you for availing our Suri Card............\n", "LIGHTGREEN");
+            cout << "\n\t\t\t\tTotal Amount with Suki Card Discount= " << totalMemberDiscount;
+            display("\n\n\n........Thank you for availing our Suri Card............\n", "LIGHTGREEN");
             getchar();
         }
         else
@@ -397,21 +421,27 @@ void change(char availSukiCard, char memberSukiCard, float totalAmount, float to
     float payment, totalChange;
     if (memberSukiCard == 'y' || memberSukiCard == 'Y' || availSukiCard == 'y' || availSukiCard == 'Y')
     {
-        cout << "Enter your payment: ";
+        cout << "\n\nEnter your payment: ";
         cin >> payment;
         totalChange = payment - totalAmountWithSukiCard;
-        cout << setprecision(2) << "Your change is " << totalChange;
+        cout << setprecision(2) << "\nYour change is " << totalChange;
         cout << endl;
+        getch();
+        system("cls");
+
     }
     else
     {
-        cout << "Enter your payment: ";
+        cout << "\n\nEnter your payment: ";
         cin >> payment;
         totalChange = payment - totalAmount;
-        cout << setprecision(2) << "Your change is " << totalChange;
+        cout << setprecision(2) << "\nYour change is " << totalChange;
         cout << endl;
+        getch();
+        system("cls");
 
     }
+
 
 }
 
@@ -523,11 +553,10 @@ int main(int argc, char *argv[])
 	system("color 07");
 
 	int option;
-	myHeader();
 
 	for(;;)
 	{
-
+	    myHeader();
 		display("\n===========================================", "LIGHTCYAN");
 		display("\n1. CUSTOMER", "LIGHTCYAN");
 		display("\n2. ADMINISTRATOR", "LIGHTCYAN");
