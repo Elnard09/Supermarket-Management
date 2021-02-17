@@ -7,12 +7,14 @@
 #include <Windows.h>
 #include "LoginAdmin.h"
 #include "Product.h"
+#include <sstream>
 
 using namespace std;
 
 string g_system_name = "SUPERMARKET MANAGEMENT SYSTEM";  //Global variable
 
 //Initialization of functions
+long stoi(const char *s);
 void admin_menu();
 void display(string my_str, string color);
 void membership(float totalAmount);
@@ -77,74 +79,83 @@ void edit_product()
 	bool found=false;
 	system("cls");
 	display("\n\t\tMODIFY PRODUCT\n", "YELLOW");
-	cout<<endl<<"=========================================="<<endl;
-	cout<<endl<<"Please Enter The Product #: ";
+	cout<<"=============================================\n"<<endl;
+	cout<<"Please Enter The Product #: ";
 	cin>>num;
+
+
 	fp.open("database.dat",ios::in|ios::out);
 	while(fp.read((char*)&objProduct,sizeof(Product)) && found==false)
 	{
 		if(objProduct.getProduct()==num)
 		{
 			objProduct.show_product();
-			cout<<"\nPlease Enter The New Details of Product: "<<endl;
+			cout<<"\n---------------------------------------------\n"<<endl;
+			cout<<"Please Enter The New Details of Product: "<<endl;
 			objProduct.create_product();
 			int pos=-1*sizeof(objProduct);
 			fp.seekp(pos,ios::cur);
 			fp.write((char*)&objProduct,sizeof(Product));
-			cout<<endl<<endl;
-			display("\n\n......Record Successfully Updated......\n", "LIGHTGREEN");
+			display("\n\n.......Record Successfully Updated........\n", "LIGHTGREEN");
 			found=true;
-			getch();
 		}
 	}
 	fp.close();
+
 	if(found==false)
-    display("\n\n.....Record Not Found......\n\n\n", "LIGHTRED");
+		display("\n\n.........Record Not Found.........", "LIGHTRED");
+
 	getch();
 	admin_menu();
 }
 
 
+//delete the product the product funstion
 void delete_product()
 {
 	int num;
-	system("cls");
-	cout<<endl<<endl<<"Please Enter The product #: ";
+	system("cls"); //clear the screen
+	display("\n\t\tDELETE PRODUCT\n", "YELLOW");
+	cout<<"=============================================\n"<<endl;
+	cout<<"Please Enter The product #: ";
 	cin>>num;
-	fp.open("database.dat",ios::in|ios::out);
-	fstream fp2;
-	fp2.open("Temp.dat",ios::out);
-	fp.seekg(0,ios::beg);
-	while(fp.read((char*)&objProduct,sizeof(Product)))
+	fp.open("database.dat",ios::in|ios::out);                   //Open the database.dat file
+	fstream fp2;                                                //Create fle stream naming fp2
+	fp2.open("Temp.dat",ios::out);                              //Open the temp.dat file and set to Output mode
+	fp.seekg(0,ios::beg);                                       //Read database.dat dile data from the beggining to end of the file.
+	while(fp.read((char*)&objProduct,sizeof(Product)))          //while there's a character in database file execute this loop.
 	{
-		if(objProduct.getProduct()!=num)
+		if(objProduct.getProduct()!=num)                        //If the Product number is not equal to Product you wanted to delete...
 		{
-			fp2.write((char*)&objProduct,sizeof(Product));
+			fp2.write((char*)&objProduct,sizeof(Product));      //write the product details to the Temp.dat file.
 		}
 	}
-	fp2.close();
-	fp.close();
-	remove("database.dat");
-	rename("Temp.dat","database.dat");
+	fp2.close();                                                //Close Temp file
+	fp.close();                                                 //Close database file
+	remove("database.dat");                                     //Delete the database.dat file
+	rename("Temp.dat","database.dat");                          //Rename Temp.dat file to database.dat
 	cout<<endl<<endl;
-	display("\tRecord Deleted...", "LIGHTGREEN");
-	getchar();
+	display(".........Record Deleted........\n\n", "LIGHTGREEN");
+	getch();
+	admin_menu();
+
 }
 
 
 void product_menu()
 {
 
-	system("cls");
-	fp.open("database.dat",ios::in);
+	system("cls");                                  //Clear the screen
+	fp.open("database.dat",ios::in);                //Open the database file
 
 	display("\n\n\t\t\t\t\PRODUCT MENU\n\n", "YELLOW");
 	cout<<"==================================================================================\n";
 	cout<<"P.NO.\t\tNAME\t\tPRICE\t\tDiscount\tAvailable Stocks\n";
 	cout<<"==================================================================================\n";
-	while(fp.read((char*)&objProduct,sizeof(Product)))
+	while(fp.read((char*)&objProduct,sizeof(Product)))          //While there's a character in database file execute this loop
 	{
-		cout << objProduct.getProduct() << "\t\t" << objProduct.getName();
+		cout << objProduct.getProduct();
+		cout << "\t\t" << objProduct.getName();
 		cout << "\t\t" << setprecision(2) << fixed <<objProduct.getPrice();
 		cout << "\t\t" << setprecision(0) << objProduct.getDiscount()<<"%";
 		cout << "\t\t"<< setprecision(0) << fixed <<objProduct.getQuantity()<< endl;
@@ -166,18 +177,33 @@ void place_order()
 	cout<<"\n PLACE YOUR ORDER";
 	cout<<"\n================================================\n";
 	do{
-		cout<<"\n\nEnter The Product #: ";
+		cout<<"\nEnter The Product #: ";
 		cin>>order_arr[c];
+		/**fp.open("database.dat",ios::in);
+
+
+		while(fp.read((char*)&objProduct,sizeof(Product)))
+        {
+		    if(objProduct.getProduct() != order_arr[c])
+            {
+                display("\nThat product is not on the list.\n\n", "LIGHTRED");
+                cout << "Please enter valid product number: ";
+                cin >> order_arr[c];
+            }
+        }
+        fp.close();
+        **/
+
+
 		cout<<"\nQuantity: ";
 		cin>>quan[c];
+
 		/**
 		fp.open("database.dat",ios::in | ios::binary);
-		fp.seekg((quan[c]), ios::beg);
+		fp.seekg(0, ios::beg);
 		while(fp.read(reinterpret_cast<char *>(&objProduct), sizeof(Product)))
         {
-
-
-            while ( objProduct.getQuantity() < quan[c] )
+            if ( stoi(objProduct.getQuantity()) < quan[c] )
             {
                 cout << "\nOut of stock.\nEnter another Quantity not exceeding ";
                 cout << stoi(objProduct.getQuantity(), 0, 2)<< " : ";
@@ -255,20 +281,27 @@ void membership(float totalAmount)
             cout << "\nPlease fill up the needed information.\n";
 
             cout << "\nEnter your name: ";
-            cin >> custName;
-            cout << "\nEnter your contact number: ";
-            cin >> custContactNum;
+            getline(cin, custName);
             cin.ignore();
 
+            cout << "\nEnter your contact number: ";
+            getline(cin, custContactNum);
+            cin.ignore();
+            cin.clear();
+            fflush(stdin);
+
             cout << "\nEnter your address: ";
-            cin >> custAddress;
+            getline(cin, custAddress);
+            cin.clear();
+            fflush(stdin);
 
             totalMemberDiscount = totalAmount - (totalAmount * 0.1);
             cout << "\n----------------------------------------------------------------------\n";
             cout << setprecision(2);
             cout << "\n\t\t\t\tTotal Amount with Suki Card Discount= " << totalMemberDiscount;
             display("\n\n\n........Thank you for availing our Suri Card............\n", "LIGHTGREEN");
-            getchar();
+            getch();
+            getch();
         }
         else
         {
@@ -280,13 +313,20 @@ void membership(float totalAmount)
 
 }
 
+/**
+cin.clear();
+fflush(stdin);
+**/
+
 void change(char availSukiCard, char memberSukiCard, float totalAmount, float totalAmountWithSukiCard)
 {
     float payment, totalChange;
     if (memberSukiCard == 'y' || memberSukiCard == 'Y' || availSukiCard == 'y' || availSukiCard == 'Y')
     {
+
         cout << "\n\nEnter your payment: ";
         cin >> payment;
+        cin.ignore();
         totalChange = payment - totalAmountWithSukiCard;
         cout << setprecision(2) << "\nYour change is " << totalChange;
         cout << endl;
@@ -298,6 +338,7 @@ void change(char availSukiCard, char memberSukiCard, float totalAmount, float to
     {
         cout << "\n\nEnter your payment: ";
         cin >> payment;
+        cin.ignore();
         totalChange = payment - totalAmount;
         cout << setprecision(2) << "\nYour change is " << totalChange;
         cout << endl;
@@ -409,6 +450,18 @@ void display(string my_str, string color){
 
 void myHeader(){
 	display("***"+g_system_name+"***\n","YELLOW");
+}
+
+long stoi(const char *s)
+{
+    long i;
+    i = 0;
+    while(*s >= '0' && *s <= '9')
+    {
+        i = i * 10 + (*s - '0');
+        s++;
+    }
+    return i;
 }
 
 int main(int argc, char *argv[])

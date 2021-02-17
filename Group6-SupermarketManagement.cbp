@@ -37,8 +37,11 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="TextTable.h" />
+		<Unit filename="LoginAdmin.cpp" />
+		<Unit filename="LoginAdmin.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="product.cpp" />
+		<Unit filename="product.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

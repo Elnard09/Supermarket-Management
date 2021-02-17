@@ -45,6 +45,7 @@ void LoginAdmin::logIn()
     string givenPassWord = "12345678910111213";
     if (givenPassWord == password)
     {
+        system("cls");
         textColor("\n\n............Successfully log in............\n", "LIGHTGREEN");
         getch();
     }
