@@ -6,6 +6,7 @@
 #include<iostream>
 #include <Windows.h>
 #include "LoginAdmin.h"
+#include "product.h"
 
 using namespace std;
 
@@ -15,68 +16,7 @@ void display(string my_str, string color);
 void membership(float totalAmount);
 void change(char availSukiCard, char memberSukiCard, float totalAmount, float totalAmountWithSukiCard);
 
-class product
-{
-	int product_number;
-	char product_name[50],addanotherornot;
-	float product_price,product_quantity,tax,product_discount;
 
-	public:
-
-	void create_product()
-	{
-		cout << endl << "Please Enter The Product Number: ";
-		cin >> product_number;
-
-		cout << endl << "Please Enter The Name of The Product: ";
-		cin.ignore();
-		cin.getline(product_name ,50);
-
-		cout << endl << "Please Enter The Price of The Product: ";
-		cin >> product_price;
-
-		cout << endl << "Please Enter The Quantity of The Product: ";
-		cin >> product_quantity;
-
-		cout << endl << "Please Enter The Discount (%): ";
-		cin >> product_discount;
-
-	}
-
-	void show_product()
-	{
-		cout << endl << "\nProduct #: " << product_number;
-		cout << endl << "\nProduct Name: " << product_name;
-		cout << endl << "\nProduct Price: " << product_price;
-		cout << endl << "\nProduct Quantity: " << product_quantity;
-		cout << endl << "\nDiscount : " << product_discount;
-	}
-
-	int getProduct()
-	{
-		return product_number;
-	}
-
-	float getPrice()
-	{
-		return product_price;
-	}
-
-	char* getName()
-	{
-		return product_name;
-	}
-
-	float getQuantity()
-	{
-	    return product_quantity;
-	}
-
-	float getDiscount()
-	{
-		return product_discount;
-	}
-};
 
 
 

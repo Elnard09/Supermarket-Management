@@ -7,10 +7,6 @@
 #include<iostream>
 #include <Windows.h>
 
-	string password;
-	string passWord = "12345678910111213";
-	bool accessGranted;
-
 LoginAdmin::LoginAdmin()
          {
             accessGranted = 0;
@@ -58,6 +54,4 @@ void LoginAdmin::logIn()
         cout << "............Invalid password............\n";
         logIn();
     }
-
-
-};
+}
