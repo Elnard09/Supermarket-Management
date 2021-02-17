@@ -6,6 +6,8 @@
 
 using namespace std;
 
+void textColor(string my_str, string color);
+
 class LoginAdmin
 {
 
@@ -19,6 +21,7 @@ class LoginAdmin
         LoginAdmin();
 
         void logIn();
+        void textColor(string my_str, string color);
 
 };
 

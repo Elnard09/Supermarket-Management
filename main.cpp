@@ -20,13 +20,15 @@ void change(char availSukiCard, char memberSukiCard, float totalAmount, float to
 //Create file stream
 fstream fp;
 
-//
+//Create Product object
 Product produc;
 
+//Save data input from user to database.dat
 void save_product()
 {
     char addanotherornot;
 
+    //Open the
 	fp.open("database.dat",ios::out|ios::app);
 	produc.create_product();
 	fp.write((char*)&produc,sizeof(Product));
