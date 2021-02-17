@@ -13,33 +13,34 @@ using namespace std;
 string g_system_name = "SUPERMARKET MANAGEMENT SYSTEM";  //Global variable
 
 //Initialization of functions
+void admin_menu();
 void display(string my_str, string color);
 void membership(float totalAmount);
 void change(char availSukiCard, char memberSukiCard, float totalAmount, float totalAmountWithSukiCard);
 
-//Create file stream
+//Create file stream naming fp.
 fstream fp;
 
 //Create Product object
-Product produc;
+Product objProduct;
 
-//Save data input from user to database.dat
+//Save data input to database.dat file
 void save_product()
 {
     char addanotherornot;
 
-    //Open the
+    //Open the database.dat file in Output mode and Append mode.
 	fp.open("database.dat",ios::out|ios::app);
-	produc.create_product();
-	fp.write((char*)&produc,sizeof(Product));
-	fp.close();
+	objProduct.create_product();
+	fp.write((char*)&objProduct,sizeof(Product));   //Write to the file
+	fp.close();  //Close file
 	cout << endl <<"Do you want to add another product? y/n: ";
     cin >> addanotherornot;
             while (addanotherornot == 'y' || addanotherornot == 'Y')
             {
                 fp.open("database.dat",ios::out|ios::app);
-                produc.create_product();
-                fp.write((char*)&produc,sizeof(Product));
+                objProduct.create_product();
+                fp.write((char*)&objProduct,sizeof(Product));
                 fp.close();
                 cout << endl <<"Do you want to add another product? y/n: ";
                 cin >> addanotherornot;
@@ -54,69 +55,53 @@ void save_product()
 void show_all_product()
 {
 	system("cls");
-	cout<<endl<<"\t\t===========================================";
-	cout<<endl<<"\t\tRECORDS.";
-	cout<<endl<<"\t\t===========================================\n";
+	cout<<endl<<"===========================================";
+	display("\n\t\tRECORDS.", "YELLOW");
+	cout<<endl<<"===========================================\n";
 	fp.open("database.dat",ios::in);
-	while(fp.read((char*)&produc,sizeof(Product)))
+	while(fp.read((char*)&objProduct,sizeof(Product)))
 	{
-		produc.show_product();
+		objProduct.show_product();
 		cout<<endl<<"==========================================\n"<<endl;
-		getchar();
+		getch();
 	}
+	display("\n\n.............All product have been displayed..............", "LIGHTGREEN");
+	getch();
+	admin_menu();
 	fp.close();
 }
-
-
-void display_record(int num)
-{
-	bool found=false;
-	fp.open("database.dat",ios::in);
-	while(fp.read((char*)&produc,sizeof(Product)))
-	{
-		if(produc.getProduct()==num)
-		{
-			system("cls");
-			produc.show_product();
-			found=true;
-		}
-	}
-
-	fp.close();
-	if(found == true)
-	cout<<"\n\nNo record found";
-	getchar();
-}
-
 
 void edit_product()
 {
 	int num;
 	bool found=false;
 	system("cls");
-	cout<<endl<<endl<<"\tPlease Enter The Product #: ";
+	display("\n\t\tMODIFY PRODUCT\n", "YELLOW");
+	cout<<endl<<"=========================================="<<endl;
+	cout<<endl<<"Please Enter The Product #: ";
 	cin>>num;
-
 	fp.open("database.dat",ios::in|ios::out);
-	while(fp.read((char*)&produc,sizeof(Product)) && found==false)
+	while(fp.read((char*)&objProduct,sizeof(Product)) && found==false)
 	{
-		if(produc.getProduct()==num)
+		if(objProduct.getProduct()==num)
 		{
-			produc.show_product();
+			objProduct.show_product();
 			cout<<"\nPlease Enter The New Details of Product: "<<endl;
-			produc.create_product();
-			int pos=-1*sizeof(produc);
+			objProduct.create_product();
+			int pos=-1*sizeof(objProduct);
 			fp.seekp(pos,ios::cur);
-			fp.write((char*)&produc,sizeof(Product));
+			fp.write((char*)&objProduct,sizeof(Product));
 			cout<<endl<<endl;
-			display("\t Record Successfully Updated...", "LIGHTGREEN");
+			display("\n\n......Record Successfully Updated......\n", "LIGHTGREEN");
 			found=true;
+			getch();
 		}
 	}
 	fp.close();
 	if(found==false)
-		cout<<endl<<endl<<"Record Not Found...";
-	getchar();
+    display("\n\n.....Record Not Found......\n\n\n", "LIGHTRED");
+	getch();
+	admin_menu();
 }
 
 
@@ -130,11 +115,11 @@ void delete_product()
 	fstream fp2;
 	fp2.open("Temp.dat",ios::out);
 	fp.seekg(0,ios::beg);
-	while(fp.read((char*)&produc,sizeof(Product)))
+	while(fp.read((char*)&objProduct,sizeof(Product)))
 	{
-		if(produc.getProduct()!=num)
+		if(objProduct.getProduct()!=num)
 		{
-			fp2.write((char*)&produc,sizeof(Product));
+			fp2.write((char*)&objProduct,sizeof(Product));
 		}
 	}
 	fp2.close();
@@ -157,12 +142,12 @@ void product_menu()
 	cout<<"==================================================================================\n";
 	cout<<"P.NO.\t\tNAME\t\tPRICE\t\tDiscount\tAvailable Stocks\n";
 	cout<<"==================================================================================\n";
-	while(fp.read((char*)&produc,sizeof(Product)))
+	while(fp.read((char*)&objProduct,sizeof(Product)))
 	{
-		cout << produc.getProduct() << "\t\t" << produc.getName();
-		cout << "\t\t" << setprecision(2) << fixed <<produc.getPrice();
-		cout << "\t\t" << setprecision(0) << produc.getDiscount()<<"%";
-		cout << "\t\t"<< setprecision(0) << fixed <<produc.getQuantity()<< endl;
+		cout << objProduct.getProduct() << "\t\t" << objProduct.getName();
+		cout << "\t\t" << setprecision(2) << fixed <<objProduct.getPrice();
+		cout << "\t\t" << setprecision(0) << objProduct.getDiscount()<<"%";
+		cout << "\t\t"<< setprecision(0) << fixed <<objProduct.getQuantity()<< endl;
 	}
 	fp.close();
 }
@@ -188,14 +173,14 @@ void place_order()
 		/**
 		fp.open("database.dat",ios::in | ios::binary);
 		fp.seekg((quan[c]), ios::beg);
-		while(fp.read(reinterpret_cast<char *>(&produc), sizeof(product)))
+		while(fp.read(reinterpret_cast<char *>(&objProduct), sizeof(Product)))
         {
 
 
-            while ( produc.getQuantity() < quan[c] )
+            while ( objProduct.getQuantity() < quan[c] )
             {
                 cout << "\nOut of stock.\nEnter another Quantity not exceeding ";
-                cout << stoi(produc.getQuantity(), 0, 2)<< " : ";
+                cout << stoi(objProduct.getQuantity(), 0, 2)<< " : ";
                 cin >> quan[c];
             }
         }
@@ -217,17 +202,17 @@ void place_order()
 	for(int x=0;x<=c;x++)
 	{
 		fp.open("database.dat",ios::in);
-		fp.read((char*)&produc,sizeof(Product));
+		fp.read((char*)&objProduct,sizeof(Product));
 		while(!fp.eof())
 		{
-			if(produc.getProduct() == order_arr[x])
+			if(objProduct.getProduct() == order_arr[x])
 			{
-				amt = produc.getPrice()* quan[x];
-				damt = amt-(amt*produc.getDiscount()/100);
-				cout<<"\n"<<order_arr[x]<<"\t"<<produc.getName()<<"\t"<<quan[x]<<"\t\t"<< fixed <<setprecision(2) <<produc.getPrice()<<"\t"<<amt<<"\t\t"<<damt;
+				amt = objProduct.getPrice()* quan[x];
+				damt = amt-(amt*objProduct.getDiscount()/100);
+				cout<<"\n"<<order_arr[x]<<"\t"<<objProduct.getName()<<"\t"<<quan[x]<<"\t\t"<< fixed <<setprecision(2) <<objProduct.getPrice()<<"\t"<<amt<<"\t\t"<<damt;
 				total += damt;
 			}
-			fp.read((char*)&produc,sizeof(Product));
+			fp.read((char*)&objProduct,sizeof(Product));
 		}
 		fp.close();
 	}
@@ -329,7 +314,7 @@ void admin_menu()
 	system("cls");
 
 	int option;
-
+    display("\n\t\t\tADMIN MENU", "YELLOW");
 	display("\n\t=============================================","LIGHTCYAN");
 	display("\n\tPress 1 to CREATE PRODUCT", "LIGHTCYAN");
 	display("\n\tPress 2 to DISPLAY ALL PRODUCTS", "LIGHTCYAN");
