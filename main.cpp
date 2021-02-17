@@ -5,6 +5,7 @@
 #include<string>
 #include<iostream>
 #include <Windows.h>
+#include "LoginAdmin.h"
 
 using namespace std;
 
@@ -13,67 +14,6 @@ string g_system_name = "SUPERMARKET MANAGEMENT SYSTEM";
 void display(string my_str, string color);
 void membership(float totalAmount);
 void change(char availSukiCard, char memberSukiCard, float totalAmount, float totalAmountWithSukiCard);
-
-
-class LoginAdmin{
-    private:
-	string password;
-	string passWord = "12345678910111213";
-	bool accessGranted;
-
-	public:
-	     LoginManager()
-         {
-            accessGranted = 0;
-         }
-
-	void logIn(){
-		password = "";
-
-		cout << "\nEnter password: ";
-		char ch = getch();
-		int counter = 0;
-		while(ch != 13)
-        {
-			if (ch == 8)
-            {
-				system("cls");
-				cout << "Enter password: ";
-				counter--;
-				for(int i = 0; i < counter; i++)
-                {
-					cout << "*";
-				}
-				password = password.substr(0,password.length() - 1);
-
-			}
-			else
-            {
-				cout << "*";
-				counter++;
-				password.push_back(ch);
-			}
-			ch = getch();
-
-		}
-        string givenPassWord = "12345678910111213";
-        if (givenPassWord == password)
-        {
-            display("\n\n............Successfully log in............\n", "LIGHTGREEN");
-            getch();
-        }
-
-		else
-        {
-			system("cls");
-			display("............Invalid password............\n","LIGHTRED");
-			logIn();
-		}
-
-    }
-};
-
-
 
 class product
 {
