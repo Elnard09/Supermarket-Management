@@ -1,4 +1,4 @@
-#include "product.h"
+#include "Product.h"
 #include<fstream>
 #include<conio.h>
 #include<string.h>
@@ -8,8 +8,7 @@
 #include <Windows.h>
 #include "LoginAdmin.h"
 
-
-void product::create_product()
+void Product::create_product()
 {
     cout << endl << "Please Enter The Product Number: ";
     cin >> product_number;
@@ -29,7 +28,7 @@ void product::create_product()
 
 	}
 
-void product::show_product()
+void Product::show_product()
 {
     cout << endl << "\nProduct #: " << product_number;
     cout << endl << "\nProduct Name: " << product_name;
@@ -38,27 +37,27 @@ void product::show_product()
     cout << endl << "\nDiscount : " << product_discount;
 }
 
-int product::getProduct()
+int Product::getProduct()
 {
     return product_number;
 }
 
-float product::getPrice()
+float Product::getPrice()
 {
     return product_price;
 }
 
-char* product::getName()
+char* Product::getName()
 {
     return product_name;
 }
 
-float product::getQuantity()
+float Product::getQuantity()
 {
     return product_quantity;
 }
 
-float product::getDiscount()
+float Product::getDiscount()
 {
     return product_discount;
 }

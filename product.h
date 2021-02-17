@@ -11,7 +11,7 @@
 
 using namespace std;
 
-class product
+class Product
 {
     private:
         int product_number;
@@ -27,7 +27,6 @@ class product
         char* getName();
         float getQuantity();
         float getDiscount();
-
 };
 
 #endif // PRODUCT_H

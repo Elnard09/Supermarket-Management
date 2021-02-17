@@ -6,24 +6,22 @@
 #include<iostream>
 #include <Windows.h>
 #include "LoginAdmin.h"
-#include "product.h"
+#include "Product.h"
 
 using namespace std;
 
-string g_system_name = "SUPERMARKET MANAGEMENT SYSTEM";
+string g_system_name = "SUPERMARKET MANAGEMENT SYSTEM";  //Global variable
 
+//Initialization of functions
 void display(string my_str, string color);
 void membership(float totalAmount);
 void change(char availSukiCard, char memberSukiCard, float totalAmount, float totalAmountWithSukiCard);
 
-
-
-
-
-
+//Create file stream
 fstream fp;
-product produc;
 
+//
+Product produc;
 
 void save_product()
 {
@@ -31,7 +29,7 @@ void save_product()
 
 	fp.open("database.dat",ios::out|ios::app);
 	produc.create_product();
-	fp.write((char*)&produc,sizeof(product));
+	fp.write((char*)&produc,sizeof(Product));
 	fp.close();
 	cout << endl <<"Do you want to add another product? y/n: ";
     cin >> addanotherornot;
@@ -39,7 +37,7 @@ void save_product()
             {
                 fp.open("database.dat",ios::out|ios::app);
                 produc.create_product();
-                fp.write((char*)&produc,sizeof(product));
+                fp.write((char*)&produc,sizeof(Product));
                 fp.close();
                 cout << endl <<"Do you want to add another product? y/n: ";
                 cin >> addanotherornot;
@@ -58,7 +56,7 @@ void show_all_product()
 	cout<<endl<<"\t\tRECORDS.";
 	cout<<endl<<"\t\t===========================================\n";
 	fp.open("database.dat",ios::in);
-	while(fp.read((char*)&produc,sizeof(product)))
+	while(fp.read((char*)&produc,sizeof(Product)))
 	{
 		produc.show_product();
 		cout<<endl<<"==========================================\n"<<endl;
@@ -72,7 +70,7 @@ void display_record(int num)
 {
 	bool found=false;
 	fp.open("database.dat",ios::in);
-	while(fp.read((char*)&produc,sizeof(product)))
+	while(fp.read((char*)&produc,sizeof(Product)))
 	{
 		if(produc.getProduct()==num)
 		{
@@ -89,7 +87,6 @@ void display_record(int num)
 }
 
 
-
 void edit_product()
 {
 	int num;
@@ -99,7 +96,7 @@ void edit_product()
 	cin>>num;
 
 	fp.open("database.dat",ios::in|ios::out);
-	while(fp.read((char*)&produc,sizeof(product)) && found==false)
+	while(fp.read((char*)&produc,sizeof(Product)) && found==false)
 	{
 		if(produc.getProduct()==num)
 		{
@@ -108,7 +105,7 @@ void edit_product()
 			produc.create_product();
 			int pos=-1*sizeof(produc);
 			fp.seekp(pos,ios::cur);
-			fp.write((char*)&produc,sizeof(product));
+			fp.write((char*)&produc,sizeof(Product));
 			cout<<endl<<endl;
 			display("\t Record Successfully Updated...", "LIGHTGREEN");
 			found=true;
@@ -131,11 +128,11 @@ void delete_product()
 	fstream fp2;
 	fp2.open("Temp.dat",ios::out);
 	fp.seekg(0,ios::beg);
-	while(fp.read((char*)&produc,sizeof(product)))
+	while(fp.read((char*)&produc,sizeof(Product)))
 	{
 		if(produc.getProduct()!=num)
 		{
-			fp2.write((char*)&produc,sizeof(product));
+			fp2.write((char*)&produc,sizeof(Product));
 		}
 	}
 	fp2.close();
@@ -158,7 +155,7 @@ void product_menu()
 	cout<<"==================================================================================\n";
 	cout<<"P.NO.\t\tNAME\t\tPRICE\t\tDiscount\tAvailable Stocks\n";
 	cout<<"==================================================================================\n";
-	while(fp.read((char*)&produc,sizeof(product)))
+	while(fp.read((char*)&produc,sizeof(Product)))
 	{
 		cout << produc.getProduct() << "\t\t" << produc.getName();
 		cout << "\t\t" << setprecision(2) << fixed <<produc.getPrice();
@@ -218,7 +215,7 @@ void place_order()
 	for(int x=0;x<=c;x++)
 	{
 		fp.open("database.dat",ios::in);
-		fp.read((char*)&produc,sizeof(product));
+		fp.read((char*)&produc,sizeof(Product));
 		while(!fp.eof())
 		{
 			if(produc.getProduct() == order_arr[x])
@@ -228,7 +225,7 @@ void place_order()
 				cout<<"\n"<<order_arr[x]<<"\t"<<produc.getName()<<"\t"<<quan[x]<<"\t\t"<< fixed <<setprecision(2) <<produc.getPrice()<<"\t"<<amt<<"\t\t"<<damt;
 				total += damt;
 			}
-			fp.read((char*)&produc,sizeof(product));
+			fp.read((char*)&produc,sizeof(Product));
 		}
 		fp.close();
 	}
