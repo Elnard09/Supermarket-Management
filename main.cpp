@@ -32,7 +32,7 @@ void save_product()
     char addanotherornot;
 
     //Open the database.dat file in Output mode and Append mode.
-	fp.open("database.dat",ios::out|ios::app);
+	fp.open("database.txt",ios::out|ios::app);
 	objProduct.create_product();
 	fp.write((char*)&objProduct,sizeof(Product));   //Write to the file
 	fp.close();  //Close file
@@ -40,7 +40,7 @@ void save_product()
     cin >> addanotherornot;
             while (addanotherornot == 'y' || addanotherornot == 'Y')
             {
-                fp.open("database.dat",ios::out|ios::app);
+                fp.open("database.txt",ios::out|ios::app);
                 objProduct.create_product();
                 fp.write((char*)&objProduct,sizeof(Product));
                 fp.close();
@@ -49,7 +49,7 @@ void save_product()
             }
 	cout << endl;
 	cout << endl;
-	display("The Product/s Has Been Sucessfully Created...", "LIGHTGREEN");
+	display("The Product/s Has Been Sucessfully Created...\n", "LIGHTGREEN");
 	getchar();
 }
 
@@ -60,7 +60,7 @@ void show_all_product()
 	cout<<endl<<"===========================================";
 	display("\n\t\tRECORDS.", "YELLOW");
 	cout<<endl<<"===========================================\n";
-	fp.open("database.dat",ios::in);
+	fp.open("database.txt",ios::in);
 	while(fp.read((char*)&objProduct,sizeof(Product)))
 	{
 		objProduct.show_product();
@@ -84,7 +84,7 @@ void edit_product()
 	cin>>num;
 
 
-	fp.open("database.dat",ios::in|ios::out);
+	fp.open("database.txt",ios::in|ios::out);
 	while(fp.read((char*)&objProduct,sizeof(Product)) && found==false)
 	{
 		if(objProduct.getProduct()==num)
@@ -119,9 +119,9 @@ void delete_product()
 	cout<<"=============================================\n"<<endl;
 	cout<<"Please Enter The product #: ";
 	cin>>num;
-	fp.open("database.dat",ios::in|ios::out);                   //Open the database.dat file
+	fp.open("database.txt",ios::in|ios::out);                   //Open the database.dat file
 	fstream fp2;                                                //Create fle stream naming fp2
-	fp2.open("Temp.dat",ios::out);                              //Open the temp.dat file and set to Output mode
+	fp2.open("Temp.txt",ios::out);                              //Open the temp.dat file and set to Output mode
 	fp.seekg(0,ios::beg);                                       //Read database.dat dile data from the beggining to end of the file.
 	while(fp.read((char*)&objProduct,sizeof(Product)))          //while there's a character in database file execute this loop.
 	{
@@ -132,8 +132,8 @@ void delete_product()
 	}
 	fp2.close();                                                //Close Temp file
 	fp.close();                                                 //Close database file
-	remove("database.dat");                                     //Delete the database.dat file
-	rename("Temp.dat","database.dat");                          //Rename Temp.dat file to database.dat
+	remove("database.txt");                                     //Delete the database.dat file
+	rename("Temp.txt","database.txt");                          //Rename Temp.dat file to database.dat
 	cout<<endl<<endl;
 	display(".........Record Deleted........\n\n", "LIGHTGREEN");
 	getch();
@@ -146,7 +146,7 @@ void product_menu()
 {
 
 	system("cls");                                  //Clear the screen
-	fp.open("database.dat",ios::in);                //Open the database file
+	fp.open("database.txt",ios::in);                //Open the database file
 
 	display("\n\n\t\t\t\t\PRODUCT MENU\n\n", "YELLOW");
 	cout<<"==================================================================================\n";
@@ -179,9 +179,8 @@ void place_order()
 	do{
 		cout<<"\nEnter The Product #: ";
 		cin>>order_arr[c];
-		/**fp.open("database.dat",ios::in);
-
-
+		fp.open("database.txt",ios::in);
+		fp.seekg(0L, ios::beg);
 		while(fp.read((char*)&objProduct,sizeof(Product)))
         {
 		    if(objProduct.getProduct() != order_arr[c])
@@ -192,42 +191,40 @@ void place_order()
             }
         }
         fp.close();
-        **/
-
 
 		cout<<"\nQuantity: ";
 		cin>>quan[c];
-
-		/**
-		fp.open("database.dat",ios::in | ios::binary);
-		fp.seekg(0, ios::beg);
+		fp.open("database.txt",ios::in | ios::binary);
+		fp.seekg(0L, ios::beg);
 		while(fp.read(reinterpret_cast<char *>(&objProduct), sizeof(Product)))
         {
-            if ( stoi(objProduct.getQuantity()) < quan[c] )
+            if ( objProduct.getQuantity() < quan[c] )
             {
                 cout << "\nOut of stock.\nEnter another Quantity not exceeding ";
-                cout << stoi(objProduct.getQuantity(), 0, 2)<< " : ";
+                cout << objProduct.getQuantity()<< " : ";
                 cin >> quan[c];
             }
         }
         fp.close();
-        **/
 
 		c++;
 		cout<<"\nDo You Want To Order Another Product ? (y/n)";
 		cin>>ch;
-		}while(ch=='y' ||ch=='Y');
+
+    }while(ch=='y' ||ch=='Y');
+
 	display("\n\nThank You...", "LIGHTGREEN");
 	getchar();
 	getch();
 	system("cls");
+
 	display("\n\n\t\t\t\tRECEIPT\n", "YELLOW");
 	cout<<"==================================================================================\n";
 	cout<<"Pr No.\tPr Name\tQuantity \tPrice \tAmount \tAmount after discount\n";
 	cout<<"==================================================================================\n";
 	for(int x=0;x<=c;x++)
 	{
-		fp.open("database.dat",ios::in);
+		fp.open("database.txt",ios::in);
 		fp.read((char*)&objProduct,sizeof(Product));
 		while(!fp.eof())
 		{
@@ -312,11 +309,6 @@ void membership(float totalAmount)
     change(availSukiCard, sukiCard, totalAmount, totalMemberDiscount);
 
 }
-
-/**
-cin.clear();
-fflush(stdin);
-**/
 
 void change(char availSukiCard, char memberSukiCard, float totalAmount, float totalAmountWithSukiCard)
 {
