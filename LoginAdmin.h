@@ -6,6 +6,7 @@
 
 using namespace std;
 
+
 void textColor(string my_str, string color);
 
 class LoginAdmin

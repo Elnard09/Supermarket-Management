@@ -7,9 +7,10 @@
 #include<string>
 #include<iostream>
 #include <Windows.h>
-#include "LoginAdmin.h"
 
 using namespace std;
+
+void display(string my_str, string color);
 
 class Product
 {
@@ -27,6 +28,7 @@ class Product
         char* getName();
         float getQuantity();
         float getDiscount();
+        void display(string my_str, string color);
 };
 
 #endif // PRODUCT_H
