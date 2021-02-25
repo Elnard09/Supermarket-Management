@@ -24,6 +24,7 @@ Product produc;
 void save_product()
 {
 	fp.open("database.dat",ios::out|ios::app);
+	createProductHeader();
 	produc.create_product();
 	fp.write((char*)&produc,sizeof(Product));
 	fp.close();
@@ -424,6 +425,10 @@ void display(string my_str, string color){
 
 }
 
+void createProductHeader()
+{
+    display("\n\t\tCREATE PRODUCT", "YELLOW");
+}
 
 void admin_menu()
 {
@@ -440,6 +445,8 @@ void admin_menu()
 
 	cout<<"\n\n\tOption: ";
 	cin>>option;
+
+
 	switch(option)
 	{
 		case 1: system("cls");

@@ -11,23 +11,11 @@
 void Product::create_product()
 {
 
-    Product objProduct;
-    fstream dataFile;
-
     bool found=false;
     cout<<endl<<"===========================================\n";
     cout << "Please Enter The Product Number: ";
     cin >> product_number;
-    dataFile.open("database.dat",ios::in|ios::out);
-	while(dataFile.read((char*)&objProduct,sizeof(Product)) && found==false)
-    {
-        if(objProduct.getProduct()==product_number)
-        {
-            display("\nThat product number is already exist: ", "LIGHTRED");
-            cin >> product_number;
-            found = true;
-        }
-    }
+
     while(1)
     {
         if(cin.fail())
