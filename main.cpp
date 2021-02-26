@@ -110,7 +110,7 @@ void edit_product()
 	admin_menu();
 }
 
-//delete the product the product funstion
+//delete the product the product function
 void delete_product()
 {
 	int num;
