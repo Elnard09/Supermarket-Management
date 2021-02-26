@@ -17,6 +17,8 @@ void display(string my_str, string color);
 void membership(float totalAmount);
 void change(char availSukiCard, char memberSukiCard, float totalAmount, float totalAmountWithSukiCard);
 void createProductHeader();
+void clickToContinue();
+void existingProduct();
 
 fstream fp;
 Product produc;
@@ -361,9 +363,28 @@ void change(char availSukiCard, char memberSukiCard, float totalAmount, float to
         system("cls");
 
     }
+}
 
+void existingProduct()
+{
+    fp.open("database.dat",ios::in);                //Open the database file
+
+	while(fp.read((char*)&produc,sizeof(Product)))          //While there's a character in database file execute this loop
+	{
+		cout << "Product #" << produc.getProduct() << ": " << produc.getName() << endl;
+		cout << "\t\t" << produc.getName();
+	}
+	fp.close();
 
 }
+
+void clickToContinue()
+{
+    display("Click any key to continue.....", "LIGHTGREEN");
+
+}
+
+
 void display(string my_str, string color){
 
 	int num_color = 0;
@@ -518,3 +539,4 @@ int main(int argc, char *argv[])
 
 	}
 }
+
