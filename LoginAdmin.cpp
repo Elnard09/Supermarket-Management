@@ -46,13 +46,14 @@ void LoginAdmin::logIn()
     if (givenPassWord == password)
     {
         system("cls");
-        textColor("\n\n............Successfully log in............\n", "LIGHTGREEN");
+        textColor("\nSuccessfully log in.......\n", "LIGHTGREEN");
+        textColor("\nClick any key to continue.....\n", "LIGHTGREEN");
         getch();
     }
     else
     {
         system("cls");
-        textColor("............Invalid password............\n", "LIGHTRED");
+        textColor("\t\tInvalid password\n", "LIGHTRED");
         logIn();
     }
 }

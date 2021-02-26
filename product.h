@@ -17,7 +17,7 @@ class Product
     private:
         int product_number;
         char product_name[50],addanotherornot;
-        float product_price,product_quantity,tax,product_discount;
+        float product_price,product_quantity,product_discount;
 
 	public:
 

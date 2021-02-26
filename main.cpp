@@ -21,16 +21,17 @@ void clickToContinue();
 void existingProduct();
 
 fstream fp;
-Product produc;
+Product objProduct;
 
 void save_product()
 {
 	fp.open("database.dat",ios::out|ios::app);
 	createProductHeader();
-	produc.create_product();
-	fp.write((char*)&produc,sizeof(Product));
+	objProduct.create_product();
+	fp.write((char*)&objProduct,sizeof(Product));
 	fp.close();
 	display("\nThe Product Has Been Sucessfully Created...\n", "LIGHTGREEN");
+    display("\nClick any key to continue.....\n", "LIGHTGREEN");
 	getchar();
 	getchar();
 	admin_menu();
@@ -45,15 +46,15 @@ void show_all_product()
 	display("\n\t\tALL PRODUCT/S.", "YELLOW");
 	cout<<endl<<"===========================================\n";
 	fp.open("database.dat",ios::in);
-	while(fp.read((char*)&produc,sizeof(Product)))
+	while(fp.read((char*)&objProduct,sizeof(Product)))
 	{
-		produc.show_product();
+		objProduct.show_product();
 		cout<<endl<<"==========================================\n"<<endl;
 		getchar();
 	}
-	display("\n\n.............All product have been displayed..............\n\n", "LIGHTGREEN");
+	display("\n\nAll product have been displayed..............\n\n", "LIGHTGREEN");
+	display("\nClick any key to continue.....\n", "LIGHTGREEN");
 	fp.close();
-	getchar();
 	getchar();
 	admin_menu();
 }
@@ -62,12 +63,12 @@ void display_record(int num)
 {
 	bool found=false;
 	fp.open("database.dat",ios::in);
-	while(fp.read((char*)&produc,sizeof(Product)))
+	while(fp.read((char*)&objProduct,sizeof(Product)))
 	{
-		if(produc.getProduct()==num)
+		if(objProduct.getProduct()==num)
 		{
 			system("cls");
-			produc.show_product();
+			objProduct.show_product();
 			found=true;
 		}
 	}
@@ -85,21 +86,23 @@ void edit_product()
 	system("cls");
 	display("\n\t\tMODIFY PRODUCT\n", "YELLOW");
 	cout<<"===========================================\n"<<endl;
+	existingProduct();
+	cout<<"\n==========================================="<<endl;
 	cout<<"\tPlease Enter The Product #: ";
 	cin>>num;
 
 	fp.open("database.dat",ios::in|ios::out);
-	while(fp.read((char*)&produc,sizeof(Product)) && found==false)
+	while(fp.read((char*)&objProduct,sizeof(Product)) && found==false)
 	{
-		if(produc.getProduct()==num)
+		if(objProduct.getProduct()==num)
 		{
-			produc.show_product();
+			objProduct.show_product();
 			cout<<"\n===========================================\n"<<endl;
 			cout<<"Please Enter The New Details of Product "<<endl;
-			produc.create_product();
-			int pos=-1*sizeof(produc);
+			objProduct.create_product();
+			int pos=-1*sizeof(objProduct);
 			fp.seekp(pos,ios::cur);
-			fp.write((char*)&produc,sizeof(Product));
+			fp.write((char*)&objProduct,sizeof(Product));
 			display("\n\n.......Record Successfully Updated........\n", "LIGHTGREEN");
 			found=true;
 		}
@@ -119,17 +122,19 @@ void delete_product()
 	system("cls");
 	display("\n\t\tDELETE PRODUCT\n", "YELLOW");
 	cout<<"=============================================\n"<<endl;
+	existingProduct();
+	cout<<"\n==========================================="<<endl;
 	cout<<"Please Enter The product #: ";
 	cin>>num;
 	fp.open("database.dat",ios::in|ios::out);               //Open the database.dat file
 	fstream fp2;                                            //Create fle stream naming fp2
 	fp2.open("Temp.dat",ios::out);                          //Open the temp.dat file and set to Output mode
 	fp.seekg(0,ios::beg);                                   //Read database.dat dile data from the beggining to end of the file.
-	while(fp.read((char*)&produc,sizeof(Product)))          //while there's a character in database file execute this loop.
+	while(fp.read((char*)&objProduct,sizeof(Product)))          //while there's a character in database file execute this loop.
 	{
-		if(produc.getProduct()!=num)                        //If the Product number is not equal to Product you wanted to delete...
+		if(objProduct.getProduct()!=num)                        //If the Product number is not equal to Product you wanted to delete...
 		{
-			fp2.write((char*)&produc,sizeof(Product));      //write the product details to the Temp.dat file.
+			fp2.write((char*)&objProduct,sizeof(Product));      //write the product details to the Temp.dat file.
 		}
 	}
 	fp2.close();                                                //Close Temp file
@@ -152,13 +157,13 @@ void product_menu()
 	cout<<"==================================================================================\n";
 	cout<<"P.NO.\t\tNAME\t\tPRICE\t\tDiscount\tAvailable Stocks\n";
 	cout<<"==================================================================================\n";
-	while(fp.read((char*)&produc,sizeof(Product)))          //While there's a character in database file execute this loop
+	while(fp.read((char*)&objProduct,sizeof(Product)))          //While there's a character in database file execute this loop
 	{
-		cout << produc.getProduct();
-		cout << "\t\t" << produc.getName();
-		cout << "\t\t" << setprecision(2) << fixed <<produc.getPrice();
-		cout << "\t\t" << setprecision(0) << produc.getDiscount()<<"%";
-		cout << "\t\t"<< setprecision(0) << fixed <<produc.getQuantity()<< endl;
+		cout << objProduct.getProduct();
+		cout << "\t\t" << objProduct.getName();
+		cout << "\t\t" << setprecision(2) << fixed <<objProduct.getPrice();
+		cout << "\t\t" << setprecision(0) << objProduct.getDiscount()<<"%";
+		cout << "\t\t"<< setprecision(0) << fixed <<objProduct.getQuantity()<< endl;
 	}
 	fp.close();
 }
@@ -193,9 +198,9 @@ void place_order()
         }
 
 		fp.open("database.dat",ios::in|ios::out);
-        while(fp.read((char*)&produc,sizeof(Product)) && found==false)
+        while(fp.read((char*)&objProduct,sizeof(Product)) && found==false)
         {
-            if(produc.getProduct()==order_arr[c])
+            if(objProduct.getProduct()==order_arr[c])
             {
                 found=true;
             }
@@ -246,17 +251,17 @@ void place_order()
 	for(int x=0;x<=c;x++)
 	{
 		fp.open("database.dat",ios::in);
-		fp.read((char*)&produc,sizeof(Product));
+		fp.read((char*)&objProduct,sizeof(Product));
 		while(!fp.eof())
 		{
-			if(produc.getProduct()==order_arr[x])
+			if(objProduct.getProduct()==order_arr[x])
 			{
-				amt=produc.getPrice()*quan[x];
-				damt=amt-(amt*produc.getDiscount()/100);
-				cout<<"\n"<<order_arr[x]<<"\t"<<produc.getName()<<"\t"<<quan[x]<<"\t\t"<< fixed <<setprecision(2)<<produc.getPrice()<<"\t"<<amt<<"\t\t"<<damt;
+				amt=objProduct.getPrice()*quan[x];
+				damt=amt-(amt*objProduct.getDiscount()/100);
+				cout<<"\n"<<order_arr[x]<<"\t"<<objProduct.getName()<<"\t"<<quan[x]<<"\t\t"<< fixed <<setprecision(2)<<objProduct.getPrice()<<"\t"<<amt<<"\t\t"<<damt;
 				total+=damt;
 			}
-			fp.read((char*)&produc,sizeof(Product));
+			fp.read((char*)&objProduct,sizeof(Product));
 		}
 		fp.close();
 	}
@@ -287,9 +292,9 @@ void membership(float totalAmount)
 	if (sukiCard == 'y' || sukiCard == 'Y')
     {
         totalMemberDiscount = totalAmount - (totalAmount * 0.1);
-        cout << "\n-------------------------------------------------------------------\n";
+        cout << "------------------------------------------------------------------------\n";
         cout << setprecision(2);
-        cout << "\n\t\t\tTotal Amount with Suki Card Discount= " << totalMemberDiscount;
+        cout << "\n\t\tTotal Amount with Suki Card Discount= " << totalMemberDiscount;
         display("\n\n\n\n\t\"Thank you for availing our Suri Card.\"\n", "LIGHTGREEN");
 
     }
@@ -299,6 +304,7 @@ void membership(float totalAmount)
         cin >> availSukiCard;
         if (availSukiCard == 'y' || availSukiCard == 'Y')
         {
+
 
             cout << "\nPlease fill up the needed information.\n";
 
@@ -318,9 +324,9 @@ void membership(float totalAmount)
             fflush(stdin);
 
             totalMemberDiscount = totalAmount - (totalAmount * 0.1);
-            cout << "\n----------------------------------------------------------------------\n";
+            cout << "------------------------------------------------------------------------\n";
             cout << setprecision(2);
-            cout << "\n\t\t\t\tTotal Amount with Suki Card Discount= " << totalMemberDiscount;
+            cout << "\n\t\tTotal Amount with Suki Card Discount= " << totalMemberDiscount;
             display("\n\n\n........Thank you for availing our Suri Card............\n", "LIGHTGREEN");
             getch();
             getch();
@@ -344,6 +350,12 @@ void change(char availSukiCard, char memberSukiCard, float totalAmount, float to
         cout << "\n\nEnter your payment: ";
         cin >> payment;
         cin.ignore();
+        while (payment < totalAmountWithSukiCard)
+        {
+            display("Your payment is insufient: ", "LIGHTRED");
+            cin >> payment;
+        }
+
         totalChange = payment - totalAmountWithSukiCard;
         cout << setprecision(2) << "\nYour change is " << totalChange;
         cout << endl;
@@ -356,11 +368,18 @@ void change(char availSukiCard, char memberSukiCard, float totalAmount, float to
         cout << "\n\nEnter your payment: ";
         cin >> payment;
         cin.ignore();
+        while (payment < totalAmountWithSukiCard)
+        {
+            display("Your payment is insufient: ", "LIGHTRED");
+            cin >> payment;
+        }
+
         totalChange = payment - totalAmount;
         cout << setprecision(2) << "\nYour change is " << totalChange;
         cout << endl;
         getch();
         system("cls");
+
 
     }
 }
@@ -369,10 +388,9 @@ void existingProduct()
 {
     fp.open("database.dat",ios::in);                //Open the database file
 
-	while(fp.read((char*)&produc,sizeof(Product)))          //While there's a character in database file execute this loop
+	while(fp.read((char*)&objProduct,sizeof(Product)))          //While there's a character in database file execute this loop
 	{
-		cout << "Product #" << produc.getProduct() << ": " << produc.getName() << endl;
-		cout << "\t\t" << produc.getName();
+		cout << "Product #" << objProduct.getProduct() << ": " << objProduct.getName() << endl << endl;
 	}
 	fp.close();
 
@@ -380,7 +398,7 @@ void existingProduct()
 
 void clickToContinue()
 {
-    display("Click any key to continue.....", "LIGHTGREEN");
+    display("\nClick any key to continue.....\n", "LIGHTGREEN");
 
 }
 
