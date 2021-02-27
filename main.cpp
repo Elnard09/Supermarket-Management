@@ -182,9 +182,9 @@ void place_order()
 	display("\n PLACE YOUR ORDER", "YELLOW");
 	cout<<"\n================================================\n";
 	do{
-		cout<<"\nEnter The Product #: ";
-		cin>>order_arr[c];
-		while(1)
+        cout<<"\nEnter The Product #: ";
+        cin>>order_arr[c];
+        while(1)
         {
             if(cin.fail())
             {
@@ -193,11 +193,13 @@ void place_order()
                 display("You have entered wrong input\n", "LIGHTRED");
                 cin>>order_arr[c];
             }
+
             if(!cin.fail())
             break;
         }
 
-		fp.open("database.dat",ios::in|ios::out);
+        fp.open("database.dat",ios::in|ios::out);
+
         while(fp.read((char*)&objProduct,sizeof(Product)) && found==false)
         {
             if(objProduct.getProduct()==order_arr[c])
@@ -224,9 +226,9 @@ void place_order()
             }
         }
 
-		cout<<"\nQuantity: ";
-		cin>>quan[c];
-		while(1)
+        cout<<"\nQuantity: ";
+        cin>>quan[c];
+        while(1)
         {
             if(cin.fail())
             {
@@ -238,10 +240,23 @@ void place_order()
             if(!cin.fail())
             break;
         }
-		c++;
-		cout<<"\nDo You Want To Order Another Product ? (y/n)";
-		cin>>ch;
-		}while(ch=='y' ||ch=='Y');
+        c++;
+
+
+        cout<<"\nDo You Want To Order Another Product ? (y/n)";
+        cin>>ch;
+
+        //Check if the input if it's character
+        while (isdigit(ch) || ispunct(ch))
+        {
+            display("ERROR: Invalid input!\n", "LIGHTRED");
+            cin.clear();
+            cin.ignore(100, '\n');
+            cin >> ch;
+        }
+
+    }while(ch=='y' ||ch=='Y');
+
 	getchar();
 	system("cls");
 	display("\n\n\t\t\t\tRECEIPT\n", "YELLOW");
@@ -289,6 +304,15 @@ void membership(float totalAmount)
 	cout << "\nDo you have Suki Card? (y/n) ";
 	cin >> sukiCard;
 
+	//Check if the input if it's character
+    while (isdigit(sukiCard) || ispunct(sukiCard))
+    {
+        display("ERROR: Invalid input!\n", "LIGHTRED");
+        cin.clear();
+        cin.ignore(100, '\n');
+        cin >> sukiCard;
+    }
+
 	if (sukiCard == 'y' || sukiCard == 'Y')
     {
         totalMemberDiscount = totalAmount - (totalAmount * 0.1);
@@ -302,6 +326,14 @@ void membership(float totalAmount)
     {
         cout << "\nDo you want to avail Suki Card? (y/n) ";
         cin >> availSukiCard;
+        //Check if the input if it's character
+        while (isdigit(availSukiCard) || ispunct(availSukiCard))
+        {
+            display("ERROR: Invalid input!\n", "LIGHTRED");
+            cin.clear();
+            cin.ignore(100, '\n');
+            cin >> availSukiCard;
+        }
         if (availSukiCard == 'y' || availSukiCard == 'Y')
         {
 
@@ -331,6 +363,7 @@ void membership(float totalAmount)
             getch();
             getch();
         }
+
         else
         {
             getch();
@@ -350,6 +383,19 @@ void change(char availSukiCard, char memberSukiCard, float totalAmount, float to
         cout << "\n\nEnter your payment: ";
         cin >> payment;
         cin.ignore();
+        while(1)
+        {
+            if(cin.fail())
+            {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(),'\n');
+                display("You have entered wrong input: ", "LIGHTRED");
+                cin>>payment;
+            }
+            if(!cin.fail())
+            break;
+        }
+
         while (payment < totalAmountWithSukiCard)
         {
             display("Your payment is insufient: ", "LIGHTRED");
@@ -359,6 +405,8 @@ void change(char availSukiCard, char memberSukiCard, float totalAmount, float to
         totalChange = payment - totalAmountWithSukiCard;
         cout << setprecision(2) << "\nYour change is " << totalChange;
         cout << endl;
+        clickToContinue();
+        getch();
         getch();
         system("cls");
 
@@ -368,7 +416,22 @@ void change(char availSukiCard, char memberSukiCard, float totalAmount, float to
         cout << "\n\nEnter your payment: ";
         cin >> payment;
         cin.ignore();
-        while (payment < totalAmountWithSukiCard)
+        while(1)
+        {
+            if(cin.fail())
+            {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(),'\n');
+                display("You have entered wrong input: ", "LIGHTRED");
+                cin>>payment;
+                cin.ignore();
+
+            }
+            if(!cin.fail())
+            break;
+        }
+
+        while (payment < totalAmount)
         {
             display("Your payment is insufient: ", "LIGHTRED");
             cin >> payment;
@@ -377,6 +440,8 @@ void change(char availSukiCard, char memberSukiCard, float totalAmount, float to
         totalChange = payment - totalAmount;
         cout << setprecision(2) << "\nYour change is " << totalChange;
         cout << endl;
+        clickToContinue();
+        getch();
         getch();
         system("cls");
 
